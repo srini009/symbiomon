@@ -1,0 +1,17 @@
+#
+# symbiomon-config.cmake.in
+#
+
+set(SYMBIOMON_VERSION @SYMBIOMON_VERSION@)
+
+@PACKAGE_INIT@
+
+set_and_check(SYMBIOMON_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+
+check_required_components(symbiomon)
+
+#include (CMakeFindDependencyMacro)
+#find_dependency (PkgConfig)
+#pkg_check_modules (margo REQUIRED margo)
+
+include ("${CMAKE_CURRENT_LIST_DIR}/symbiomon-targets.cmake")
