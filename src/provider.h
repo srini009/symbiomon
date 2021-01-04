@@ -9,7 +9,6 @@
 #include <margo.h>
 #include <abt-io.h>
 #include <uuid/uuid.h>
-#include "symbiomon/symbiomon-backend.h"
 #include "uthash.h"
 #include "types.h"
 
@@ -19,7 +18,6 @@ typedef struct symbiomon_provider {
     uint16_t           provider_id;         // Provider id
     ABT_pool           pool;                // Pool on which to post RPC requests
     abt_io_instance_id abtio;               // ABT-IO instance
-    char*              token;               // Security token
     /* Resources and backend types */
     size_t               num_metrics;     // number of metrics
     symbiomon_metric*      metrics;         // hash of metrics by uuid

@@ -42,18 +42,27 @@ symbiomon_return_t symbiomon_client_finalize(symbiomon_client_t client)
 }
 
 /* APIs for microservice clients */
-symbiomon_metric_create(char *ns, char *name, symbiomon_metric_type t, char *desc, char **taglist, symbiomon_local_metric_handle_t* metric_handle, symbiomon_provider_t p)
+symbiomon_return_t symbiomon_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, char **taglist, int num_tags, symbiomon_metric_t* m, symbiomon_provider_t p)
 {
-    return SYMBIOMON_SUCCESS;
+    return symbiomon_provider_metric_create(ns, name, t, desc, taglist, num_tags, m, p);
 }
 
-symbiomon_return_t symbiomon_metric_destroy(symbiomon_local_metric_handle_t m)
+symbiomon_return_t symbiomon_metric_destroy(symbiomon_metric_t m, symbiomon_provider_t p)
 {
-    return SYMBIOMON_SUCCESS;
+    return symbiomon_provider_metric_destroy(m, p);
 }
 
-symbiomon_return_t symbiomon_metric_update(symbiomon_local_metric_handle_t m, double val)
+symbiomon_return_t symbiomon_metric_destroy_all(symbiomon_provider_t p)
 {
+    return symbiomon_provider_destroy_all_metrics(p);
+}
+
+symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
+{
+    m->buffer[m->buffer_index].val = val;
+    m->buffer[m->buffer_index].time = ABT_get_wtime();
+    m->buffer_index++;
+
     return SYMBIOMON_SUCCESS;
 }
 
@@ -63,7 +72,7 @@ symbiomon_return_t symbiomon_metric_register_retrieval_callback(char *ns, func f
 }
 
 /* APIs for remote monitoring clients */
-symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, char** taglist, symbiomon_metric_id_t* metric_id)
+symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, char** taglist, int num_tags, symbiomon_metric_id_t* metric_id)
 {
     return SYMBIOMON_SUCCESS;
 }

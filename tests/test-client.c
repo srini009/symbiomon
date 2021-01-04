@@ -100,17 +100,17 @@ static MunitResult test_metric(const MunitParameter params[], void* data)
     ret = symbiomon_client_init(context->mid, &client);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can create a metric handle
-    ret = symbiomon_metric_handle_create(client,
+    ret = symbiomon_remote_metric_handle_create(client,
             context->addr, provider_id, context->id, &rh);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can increase the ref count
-    ret = symbiomon_metric_handle_ref_incr(rh);
+    ret = symbiomon_remote_metric_handle_ref_incr(rh);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can destroy the metric handle
-    ret = symbiomon_metric_handle_release(rh);
+    ret = symbiomon_remote_metric_handle_release(rh);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // ... and a second time because of the increase ref 
-    ret = symbiomon_metric_handle_release(rh);
+    ret = symbiomon_remote_metric_handle_release(rh);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can free the client object
     ret = symbiomon_client_finalize(client);
@@ -132,11 +132,11 @@ static MunitResult test_hello(const MunitParameter params[], void* data)
     ret = symbiomon_client_init(context->mid, &client);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can create a metric handle
-    ret = symbiomon_metric_handle_create(client,
+    ret = symbiomon_remote_metric_handle_create(client,
             context->addr, provider_id, context->id, &rh);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can destroy the metric handle
-    ret = symbiomon_metric_handle_release(rh);
+    ret = symbiomon_remote_metric_handle_release(rh);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can free the client object
     ret = symbiomon_client_finalize(client);
@@ -157,13 +157,13 @@ static MunitResult test_sum(const MunitParameter params[], void* data)
     ret = symbiomon_client_init(context->mid, &client);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can create a metric handle
-    ret = symbiomon_metric_handle_create(client,
+    ret = symbiomon_remote_metric_handle_create(client,
             context->addr, provider_id, context->id, &rh);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can send a sum RPC to the metric
     int32_t result = 0;
     // test that we can destroy the metric handle
-    ret = symbiomon_metric_handle_release(rh);
+    ret = symbiomon_remote_metric_handle_release(rh);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can free the client object
     ret = symbiomon_client_finalize(client);
@@ -185,18 +185,18 @@ static MunitResult test_invalid(const MunitParameter params[], void* data)
     ret = symbiomon_client_init(context->mid, &client);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // create a metric handle for a wrong metric id
-    ret = symbiomon_metric_handle_create(client,
+    ret = symbiomon_remote_metric_handle_create(client,
             context->addr, provider_id, invalid_id, &rh1);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // create a metric handle for a wrong provider id
-    ret = symbiomon_metric_handle_create(client,
+    ret = symbiomon_remote_metric_handle_create(client,
             context->addr, provider_id + 1, context->id, &rh2);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test sending to the invalid metric id
-    ret = symbiomon_metric_handle_release(rh1);
+    ret = symbiomon_remote_metric_handle_release(rh1);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can destroy the metric handle
-    ret = symbiomon_metric_handle_release(rh2);
+    ret = symbiomon_remote_metric_handle_release(rh2);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can free the client object
     ret = symbiomon_client_finalize(client);

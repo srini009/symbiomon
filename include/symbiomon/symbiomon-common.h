@@ -18,6 +18,7 @@ extern "C" {
  */
 typedef enum symbiomon_return_t {
     SYMBIOMON_SUCCESS,
+    SYMBIOMON_ERR_INVALID_NAME,      /* Metric creation error - name or ns missing */
     SYMBIOMON_ERR_ALLOCATION,        /* Allocation error */
     SYMBIOMON_ERR_INVALID_ARGS,      /* Invalid argument */
     SYMBIOMON_ERR_INVALID_PROVIDER,  /* Invalid provider id */

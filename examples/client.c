@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     }
 
     margo_info(mid, "Releasing metric handle");
-    ret = symbiomon_metric_handle_release(symbiomon_rh);
+    ret = symbiomon_remote_metric_handle_release(symbiomon_rh);
     if(ret != SYMBIOMON_SUCCESS) {
         FATAL(mid,"symbiomon_metric_handle_release failed (ret = %d)", ret);
     }

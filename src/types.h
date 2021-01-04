@@ -11,6 +11,7 @@
 #include <mercury_proc.h>
 #include <mercury_proc_string.h>
 #include "symbiomon/symbiomon-common.h"
+#include "uthash.h"
 
 static inline hg_return_t hg_proc_symbiomon_metric_id_t(hg_proc_t proc, symbiomon_metric_id_t *id);
 
@@ -57,7 +58,7 @@ static inline hg_return_t hg_proc_list_metrics_out_t(hg_proc_t proc, void *data)
 /* Client RPC types */
 
 MERCURY_GEN_PROC(metric_fetch_in_t,
-        ((symbiomon_metric_id_t)(metric_id))
+        ((symbiomon_metric_id_t)(metric_id)))
 
 MERCURY_GEN_PROC(metric_fetch_out_t,
         ((int32_t)(ret)))
@@ -74,7 +75,7 @@ typedef enum symbiomon_metric_type {
    SYMBIOMON_TYPE_METRIC,
    SYMBIOMON_TYPE_TIMER,
    SYMBIOMON_TYPE_GAUGE    
-} symbiomon_metric_type;
+} symbiomon_metric_type_t;
 
 typedef struct symbiomon_metric_sample {
    double time;
@@ -85,14 +86,15 @@ typedef symbiomon_metric_sample* symbiomon_metric_buffer;
 
 typedef struct symbiomon_metric {
     symbiomon_metric_id_t metric_id;
-    char** taglist;
     symbiomon_metric_type_t type;
-    symbiomon_metric_sample_buffer buffer;
-    char* desc;
-    char* name;
-    char* ns;
-    symbiomon_metric_id_t id;  // identifier of the backend
-    UT_hash_handle      hh;  // handle for uthash
+    symbiomon_metric_buffer buffer;
+    unsigned int buffer_index;
+    char desc[200];
+    char* name[36];
+    char* ns[36];
+    symbiomon_metric_id_t id;
+    UT_hash_handle      hh;
 } symbiomon_metric;
 
+typedef symbiomon_metric* symbiomon_metric_t;
 #endif

@@ -13,6 +13,7 @@
 typedef struct symbiomon_client {
    margo_instance_id mid;
    hg_id_t           metric_fetch_id;
+   hg_id_t           list_metrics_id;
    uint64_t          num_metric_handles;
 } symbiomon_client;
 
