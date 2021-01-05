@@ -79,7 +79,6 @@ typedef struct symbiomon_metric_sample {
 typedef symbiomon_metric_sample* symbiomon_metric_buffer;
 
 typedef struct symbiomon_metric {
-    symbiomon_metric_id_t metric_id;
     symbiomon_metric_type_t type;
     symbiomon_metric_buffer buffer;
     unsigned int buffer_index;

@@ -14,9 +14,8 @@
 static void symbiomon_finalize_provider(void* p);
 
 /* Functions to manipulate the hash of metrics */
-static inline void prepare_string_for_uuid(char *input, char *output);
 
-static inline void uuid_xor(symbiomon_metric_id_t first, symbiomon_metric_id_t second, symbiomon_metric_id_t * result);
+static inline unsigned long hash(unsigned char *str);
 
 static inline symbiomon_metric* find_metric(
         symbiomon_provider_t provider,
@@ -141,22 +140,16 @@ symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbio
 
     /* create a uuid for the new metric */
     symbiomon_metric_id_t id, temp_id;
-    char buffered_str[37];
 
-    prepare_string_for_uuid(ns, buffered_str); 
-    symbiomon_metric_id_from_string(buffered_str, &id);
-
-    prepare_string_for_uuid(name, buffered_str); 
-    symbiomon_metric_id_from_string(buffered_str, &temp_id);
-
-    uuid_xor(id, temp_id, &id);
+    id.uuid = hash(ns);
+    temp_id.uuid = hash(name);
+    id.uuid = id.uuid^temp_id.uuid;
 
     /* XOR all the tag ids, so that any ordering of tags returns the same final metric id */
     int i;
     for(i = 0; i < num_tags; i++) {
-        prepare_string_for_uuid(taglist[i], buffered_str);
-        symbiomon_metric_id_from_string(buffered_str, &temp_id);
-        uuid_xor(id, temp_id, &id);
+	temp_id.uuid = hash(taglist[i]);
+	id.uuid = id.uuid^temp_id.uuid;
     }
 
     /* allocate a metric, set it up, and add it to the provider */
@@ -170,10 +163,7 @@ symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbio
     metric->buffer = (symbiomon_metric_buffer)calloc(METRIC_BUFFER_SIZE, sizeof(symbiomon_metric_sample));
     add_metric(provider, metric);
 
-    char id_str[37];
-    symbiomon_metric_id_to_string(id, id_str);
-    margo_debug(provider->mid, "Created metric %s of type \"%s\"", id_str, metric->type);
-    fprintf(stderr, "Created metric %s of type \"%d\"", id_str, metric->type);
+    fprintf(stderr, "Created metric %d of type \"%d\"", id, metric->type);
 
     *m = metric;
 
@@ -224,9 +214,6 @@ symbiomon_return_t symbiomon_provider_metric_destroy(symbiomon_metric_t m, symbi
     /* remove the metric from the provider */
     remove_metric(provider, &metric->id, 1);
 
-    char id_str[37];
-    symbiomon_metric_id_to_string(metric->id, id_str);
-    
     return SYMBIOMON_SUCCESS;
 }
 
@@ -339,26 +326,16 @@ static inline void remove_all_metrics(
     provider->num_metrics = 0;
 }
 
-static inline void prepare_string_for_uuid(char *input, char *output)
+/* djb2 hash from Dan Bernstein */
+static inline unsigned long
+hash(unsigned char *str)
 {
-    int input_strlen = strlen(input);
-    assert(input_strlen <= 36);
-    strcpy(output, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\0");
-    int i;
-    for(i = 0; i < input_strlen; i++)
-        output[i] = input[i];
+    unsigned long hash = 5381;
+    int c;
+
+    while (c = *str++)
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    return hash;
 }
 
-static inline void uuid_xor(symbiomon_metric_id_t first, symbiomon_metric_id_t second, symbiomon_metric_id_t * result)
-{
-  char first_str[37], second_str[37], xored_str[37];
-  symbiomon_metric_id_to_string(first, first_str); 
-  symbiomon_metric_id_to_string(second, second_str); 
-
-  int i = 0;
-  for(i = 0; i < 36; i++)
-      xored_str[i] = first_str[i] ^ second_str[i];
-  xored_str[36] = '\0';
-
-  symbiomon_metric_id_from_string(xored_str, result);
-}

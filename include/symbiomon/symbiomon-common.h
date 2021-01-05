@@ -38,33 +38,8 @@ typedef enum symbiomon_return_t {
  * @brief Identifier for a metric.
  */
 typedef struct symbiomon_metric_id_t {
-    uuid_t uuid;
+    unsigned long uuid;
 } symbiomon_metric_id_t;
-
-/**
- * @brief Converts a symbiomon_metric_id_t into a string.
- *
- * @param id Id to convert
- * @param out[37] Resulting null-terminated string
- */
-static inline void symbiomon_metric_id_to_string(
-        symbiomon_metric_id_t id,
-        char out[37]) {
-    uuid_unparse(id.uuid, out);
-}
-
-/**
- * @brief Converts a string into a symbiomon_metric_id_t. The string
- * should be a 36-characters string + null terminator.
- *
- * @param in input string
- * @param id resulting id
- */
-static inline void symbiomon_metric_id_from_string(
-        const char* in,
-        symbiomon_metric_id_t* id) {
-    uuid_parse(in, id->uuid);
-}
 
 typedef enum symbiomon_metric_type {
    SYMBIOMON_TYPE_COUNTER,
