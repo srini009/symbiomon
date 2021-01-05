@@ -173,6 +173,7 @@ symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbio
     char id_str[37];
     symbiomon_metric_id_to_string(id, id_str);
     margo_debug(provider->mid, "Created metric %s of type \"%s\"", id_str, metric->type);
+    fprintf(stderr, "Created metric %s of type \"%d\"", id_str, metric->type);
 
     *m = metric;
 

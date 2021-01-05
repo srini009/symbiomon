@@ -71,12 +71,6 @@ static inline hg_return_t hg_proc_symbiomon_metric_id_t(
     return hg_proc_memcpy(proc, id, sizeof(*id));
 }
 
-typedef enum symbiomon_metric_type {
-   SYMBIOMON_TYPE_METRIC,
-   SYMBIOMON_TYPE_TIMER,
-   SYMBIOMON_TYPE_GAUGE    
-} symbiomon_metric_type_t;
-
 typedef struct symbiomon_metric_sample {
    double time;
    double val;

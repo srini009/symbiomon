@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <margo.h>
 #include <symbiomon/symbiomon-server.h>
+#include <symbiomon/symbiomon-metric.h>
+#include <symbiomon/symbiomon-common.h>
 
 int main(int argc, char** argv)
 {
@@ -25,7 +27,11 @@ int main(int argc, char** argv)
 
     struct symbiomon_provider_args args = SYMBIOMON_PROVIDER_ARGS_INIT;
 
-    symbiomon_provider_register(mid, 42, &args, SYMBIOMON_PROVIDER_IGNORE);
+    symbiomon_provider_t provider;
+    symbiomon_provider_register(mid, 42, &args, &provider);
+
+    symbiomon_metric_t m;
+    symbiomon_metric_create("srini", "testmetric", SYMBIOMON_TYPE_COUNTER, "My first metric", NULL, 0, &m, provider);
 
     margo_wait_for_finalize(mid);
 

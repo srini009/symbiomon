@@ -66,6 +66,12 @@ static inline void symbiomon_metric_id_from_string(
     uuid_parse(in, id->uuid);
 }
 
+typedef enum symbiomon_metric_type {
+   SYMBIOMON_TYPE_COUNTER,
+   SYMBIOMON_TYPE_TIMER,
+   SYMBIOMON_TYPE_GAUGE    
+} symbiomon_metric_type_t;
+
 #ifdef __cplusplus
 }
 #endif
