@@ -18,11 +18,14 @@ typedef struct symbiomon_metric_handle *symbiomon_metric_handle_t;
 typedef struct symbiomon_metric *symbiomon_metric_t;
 typedef enum symbiomon_metric_type symbiomon_metric_type_t;
 typedef struct symbiomon_provider* symbiomon_provider_t;
+typedef struct symbiomon_taglist* symbiomon_taglist_t;
 typedef void (*func)();
 #define SYMBIOMON_METRIC_HANDLE_NULL ((symbiomon_metric_handle_t)NULL)
 
 /* APIs for providers to record performance data */
-symbiomon_return_t symbiomon_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, char **taglist, int num_tags, symbiomon_metric_t* metric_handle, symbiomon_provider_t provider);
+symbiomon_return_t symbiomon_taglist_create(symbiomon_taglist_t *taglist, int num_tags, ...);
+symbiomon_return_t symbiomon_taglist_destroy(symbiomon_taglist_t taglist);
+symbiomon_return_t symbiomon_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* metric_handle, symbiomon_provider_t provider);
 symbiomon_return_t symbiomon_metric_destroy(symbiomon_metric_t m, symbiomon_provider_t provider);
 symbiomon_return_t symbiomon_metric_destroy_all(symbiomon_provider_t provider);
 symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val);

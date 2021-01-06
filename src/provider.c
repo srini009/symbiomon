@@ -133,13 +133,15 @@ int symbiomon_provider_destroy(
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, char **taglist, int num_tags, symbiomon_metric_t* m, symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider)
 {
     if(!ns || !name)
         return SYMBIOMON_ERR_INVALID_NAME;
 
     /* create a uuid for the new metric */
     symbiomon_metric_id_t id, temp_id;
+    char **taglist = tl->taglist;
+    int num_tags = tl->num_tags;
 
     id.uuid = hash(ns);
     temp_id.uuid = hash(name);
@@ -159,6 +161,7 @@ symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbio
     strcpy(metric->ns, ns);
     strcpy(metric->desc, desc);
     metric->type = t;
+    metric->taglist = tl;
     metric->buffer_index = 0;
     metric->buffer = (symbiomon_metric_buffer)calloc(METRIC_BUFFER_SIZE, sizeof(symbiomon_metric_sample));
     add_metric(provider, metric);

@@ -3,6 +3,7 @@
  * 
  * See COPYRIGHT in top-level directory.
  */
+#include <stdarg.h>
 #include "types.h"
 #include "client.h"
 #include "symbiomon/symbiomon-client.h"
@@ -42,9 +43,41 @@ symbiomon_return_t symbiomon_client_finalize(symbiomon_client_t client)
 }
 
 /* APIs for microservice clients */
-symbiomon_return_t symbiomon_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, char **taglist, int num_tags, symbiomon_metric_t* m, symbiomon_provider_t p)
+symbiomon_return_t symbiomon_taglist_create(symbiomon_taglist_t *taglist, int num_tags, ...) 
 {
-    return symbiomon_provider_metric_create(ns, name, t, desc, taglist, num_tags, m, p);
+    *taglist = (symbiomon_taglist_t)malloc(sizeof(symbiomon_taglist));
+    va_list valist;
+    va_start(valist, num_tags);
+
+    (*taglist)->taglist = (char **)malloc(num_tags*sizeof(char*));
+    (*taglist)->num_tags = num_tags;
+    int i = 0;
+
+    for(i = 0; i < num_tags; i++) {
+        (*taglist)->taglist[i] = (char*)malloc(36*sizeof(char*));
+	strcpy((*taglist)->taglist[i], va_arg(valist, char*));
+    }
+
+    va_end(valist);
+    return SYMBIOMON_SUCCESS;
+
+}
+
+symbiomon_return_t symbiomon_taglist_destroy(symbiomon_taglist_t taglist)
+{
+    int i;
+    for(i = 0; i < taglist->num_tags; i++) {
+        free(taglist->taglist[i]);
+    }
+
+    free(taglist->taglist);
+    free(taglist);
+
+}
+
+symbiomon_return_t symbiomon_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* m, symbiomon_provider_t p)
+{
+    return symbiomon_provider_metric_create(ns, name, t, desc, taglist, m, p);
 }
 
 symbiomon_return_t symbiomon_metric_destroy(symbiomon_metric_t m, symbiomon_provider_t p)

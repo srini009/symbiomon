@@ -31,24 +31,19 @@ int main(int argc, char** argv)
     symbiomon_provider_register(mid, 42, &args, &provider);
 
     symbiomon_metric_t m;
+    symbiomon_taglist_t taglist;
 
-    char**taglist = (char **)malloc(3*sizeof(char*));
+    symbiomon_taglist_create(&taglist, 5, "tag1", "tag2", "tag3", "tag4", "tag5");
 
-    int i = 0;
-    for(i = 0; i < 3; i++) 
-        taglist[i] = (char*)malloc(20*sizeof(char*));
-
-    strcpy(taglist[0], "tag1");
-    strcpy(taglist[1], "tag2");
-    strcpy(taglist[2], "tag3");
-
-    symbiomon_metric_create("srini", "testmetric", SYMBIOMON_TYPE_COUNTER, "My first metric", taglist, 3, &m, provider);
+    symbiomon_metric_create("srini", "testmetric", SYMBIOMON_TYPE_COUNTER, "My first metric", taglist, &m, provider);
 
     symbiomon_metric_update(m, 14.5);
     symbiomon_metric_update(m, 15.5);
     symbiomon_metric_update(m, 16.5);
 
     symbiomon_metric_destroy(m, provider);
+
+    symbiomon_taglist_destroy(taglist);
 
     margo_wait_for_finalize(mid);
 

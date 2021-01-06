@@ -78,6 +78,13 @@ typedef struct symbiomon_metric_sample {
 
 typedef symbiomon_metric_sample* symbiomon_metric_buffer;
 
+typedef struct symbiomon_taglist {
+    char **taglist;
+    int num_tags;
+} symbiomon_taglist;
+
+typedef symbiomon_taglist* symbiomon_taglist_t;
+
 typedef struct symbiomon_metric {
     symbiomon_metric_type_t type;
     symbiomon_metric_buffer buffer;
@@ -85,9 +92,11 @@ typedef struct symbiomon_metric {
     char desc[200];
     char* name[36];
     char* ns[36];
+    symbiomon_taglist_t taglist;
     symbiomon_metric_id_t id;
     UT_hash_handle      hh;
 } symbiomon_metric;
 
 typedef symbiomon_metric* symbiomon_metric_t;
+
 #endif
