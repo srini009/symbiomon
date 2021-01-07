@@ -26,10 +26,6 @@ int main(int argc, char** argv)
     hg_return_t hret;
     const char* svr_addr_str = argv[1];
     uint16_t    provider_id  = atoi(argv[2]);
-    const char* id_str       = argv[3];
-    if(strlen(id_str) != 3) {
-        FATAL(MARGO_INSTANCE_NULL,"id should be 3 character long");
-    }
 
     margo_instance_id mid = margo_init("na+sm://", MARGO_CLIENT_MODE, 0, 0);
     assert(mid);
@@ -49,10 +45,14 @@ int main(int argc, char** argv)
         FATAL(mid,"symbiomon_client_init failed (ret = %d)", ret);
     }
 
-    margo_info(mid, "Releasing metric handle");
-    ret = symbiomon_remote_metric_handle_release(symbiomon_rh);
+    size_t count = 5;
+    symbiomon_metric_id_t ids;
+    ret = symbiomon_remote_list_metrics(symbiomon_clt, svr_addr, provider_id, &ids, &count);
+
     if(ret != SYMBIOMON_SUCCESS) {
-        FATAL(mid,"symbiomon_metric_handle_release failed (ret = %d)", ret);
+	fprintf(stderr, "symbiomon_remote_list_metrics failed (ret = %d)\n", ret);
+    } else {
+	fprintf(stderr, "Retrieved a total of %d metrics\n", count);
     }
 
     margo_info(mid, "Finalizing client");

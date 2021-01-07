@@ -5,6 +5,7 @@
  */
 #include <assert.h>
 #include "symbiomon/symbiomon-server.h"
+#include "symbiomon/symbiomon-common.h"
 #include "symbiomon/symbiomon-backend.h"
 #include "provider.h"
 #include "types.h"
@@ -139,20 +140,8 @@ symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbio
         return SYMBIOMON_ERR_INVALID_NAME;
 
     /* create a uuid for the new metric */
-    symbiomon_metric_id_t id, temp_id;
-    char **taglist = tl->taglist;
-    int num_tags = tl->num_tags;
-
-    id.uuid = hash(ns);
-    temp_id.uuid = hash(name);
-    id.uuid = id.uuid^temp_id.uuid;
-
-    /* XOR all the tag ids, so that any ordering of tags returns the same final metric id */
-    int i;
-    for(i = 0; i < num_tags; i++) {
-	temp_id.uuid = hash(taglist[i]);
-	id.uuid = id.uuid^temp_id.uuid;
-    }
+    symbiomon_metric_id_t id;
+    symbiomon_id_from_string_identifiers(ns, name, tl->taglist, tl->num_tags, &id);
 
     /* allocate a metric, set it up, and add it to the provider */
     symbiomon_metric* metric = (symbiomon_metric*)calloc(1, sizeof(*metric));
@@ -166,7 +155,8 @@ symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbio
     metric->buffer = (symbiomon_metric_buffer)calloc(METRIC_BUFFER_SIZE, sizeof(symbiomon_metric_sample));
     add_metric(provider, metric);
 
-    fprintf(stderr, "Created metric %d of type \"%d\"", id, metric->type);
+    fprintf(stderr, "\nCreated metric %d of type \"%d\n", id, metric->type);
+    fprintf(stderr, "Num metrics is: %d\n", provider->num_metrics);
 
     *m = metric;
 
@@ -279,7 +269,6 @@ symbiomon_return_t symbiomon_provider_register_backend(
     return SYMBIOMON_SUCCESS;
 }
 
-
 static inline symbiomon_metric* find_metric(
         symbiomon_provider_t provider,
         const symbiomon_metric_id_t* id)
@@ -328,17 +317,3 @@ static inline void remove_all_metrics(
     }
     provider->num_metrics = 0;
 }
-
-/* djb2 hash from Dan Bernstein */
-static inline unsigned long
-hash(unsigned char *str)
-{
-    unsigned long hash = 5381;
-    int c;
-
-    while (c = *str++)
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-
-    return hash;
-}
-

@@ -47,6 +47,42 @@ typedef enum symbiomon_metric_type {
    SYMBIOMON_TYPE_GAUGE    
 } symbiomon_metric_type_t;
 
+inline unsigned long hash(unsigned char *str);
+
+inline void symbiomon_id_from_string_identifiers(char *ns, char *name, char **taglist, int num_tags, symbiomon_metric_id_t *id_);
+
+/* djb2 hash from Dan Bernstein */
+inline unsigned long
+hash(unsigned char *str)
+{
+    unsigned long hash = 5381;
+    int c;
+
+    while (c = *str++)
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    return hash;
+}
+
+
+inline void symbiomon_id_from_string_identifiers(char *ns, char *name, char **taglist, int num_tags, symbiomon_metric_id_t *id_)
+{
+    symbiomon_metric_id_t id, temp_id;
+
+    id.uuid = hash(ns);
+    temp_id.uuid = hash(name);
+    id.uuid = id.uuid^temp_id.uuid;
+
+    /* XOR all the tag ids, so that any ordering of tags returns the same final metric id */
+    int i;
+    for(i = 0; i < num_tags; i++) {
+	temp_id.uuid = hash(taglist[i]);
+	id.uuid = id.uuid^temp_id.uuid;
+    }
+   
+    id_->uuid = id.uuid;
+}
+
 #ifdef __cplusplus
 }
 #endif

@@ -7,6 +7,7 @@
 #include "types.h"
 #include "client.h"
 #include "symbiomon/symbiomon-client.h"
+#include "symbiomon/symbiomon-common.h"
 
 symbiomon_return_t symbiomon_client_init(margo_instance_id mid, symbiomon_client_t* client)
 {
@@ -27,6 +28,7 @@ symbiomon_return_t symbiomon_client_init(margo_instance_id mid, symbiomon_client
         c->list_metrics_id = MARGO_REGISTER(mid, "symbiomon_remote_list_metrics", list_metrics_in_t, list_metrics_out_t, NULL);
     }
 
+    c->num_metric_handles = 0;
     *client = c;
     return SYMBIOMON_SUCCESS;
 }
@@ -105,12 +107,12 @@ symbiomon_return_t symbiomon_metric_register_retrieval_callback(char *ns, func f
 }
 
 /* APIs for remote monitoring clients */
-symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, char** taglist, int num_tags, symbiomon_metric_id_t* metric_id)
+symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, symbiomon_taglist_t taglist, symbiomon_metric_id_t* metric_id)
 {
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handle)
+symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handle, int64_t *num_samples_requested, symbiomon_metric_buffer *buf)
 {
     return SYMBIOMON_SUCCESS;
 }
@@ -169,7 +171,40 @@ symbiomon_return_t symbiomon_remote_metric_handle_release(symbiomon_metric_handl
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_remote_list_metrics(symbiomon_client_t client, hg_addr_t addr, uint16_t provider_id, const char* token, symbiomon_metric_id_t* ids, size_t* count)
+symbiomon_return_t symbiomon_remote_list_metrics(symbiomon_client_t client, hg_addr_t addr, uint16_t provider_id, symbiomon_metric_id_t* ids, size_t* count)
 {
-    return SYMBIOMON_SUCCESS;
+    hg_handle_t h;
+    list_metrics_in_t  in;
+    list_metrics_out_t out;
+    symbiomon_return_t ret;
+    hg_return_t hret;
+
+    in.max_ids = *count;
+
+    hret = margo_create(client->mid, addr, client->list_metrics_id, &h);
+    if(hret != HG_SUCCESS)
+        return SYMBIOMON_ERR_FROM_MERCURY;
+
+    hret = margo_provider_forward(provider_id, h, &in);
+    if(hret != HG_SUCCESS) {
+        margo_destroy(h);
+        return SYMBIOMON_ERR_FROM_MERCURY;
+    }
+
+    hret = margo_get_output(h, &out);
+    if(hret != HG_SUCCESS) {
+        margo_destroy(h);
+        return SYMBIOMON_ERR_FROM_MERCURY;
+    }
+
+    ret = out.ret;
+    if(ret == SYMBIOMON_SUCCESS) {
+        *count = out.count;
+	ids = (symbiomon_metric_id_t*)malloc(out.count*sizeof(symbiomon_metric_id_t));
+        memcpy(ids, out.ids, out.count*sizeof(*ids));
+    }
+    
+    margo_free_output(h, &out);
+    margo_destroy(h);
+    return ret;
 }

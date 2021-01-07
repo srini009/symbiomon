@@ -20,7 +20,6 @@ static inline hg_return_t hg_proc_symbiomon_metric_id_t(hg_proc_t proc, symbiomo
 /* Client RPC types */
 
 MERCURY_GEN_PROC(list_metrics_in_t,
-        ((hg_string_t)(token))\
         ((hg_size_t)(max_ids)))
 
 typedef struct list_metrics_out_t {
@@ -54,8 +53,6 @@ static inline hg_return_t hg_proc_list_metrics_out_t(hg_proc_t proc, void *data)
     }
     return ret;
 }
-
-/* Client RPC types */
 
 MERCURY_GEN_PROC(metric_fetch_in_t,
         ((symbiomon_metric_id_t)(metric_id)))

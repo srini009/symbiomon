@@ -30,20 +30,28 @@ int main(int argc, char** argv)
     symbiomon_provider_t provider;
     symbiomon_provider_register(mid, 42, &args, &provider);
 
-    symbiomon_metric_t m;
-    symbiomon_taglist_t taglist;
+    symbiomon_metric_t m, m2, m3;
+    symbiomon_taglist_t taglist, taglist2, taglist3;
 
     symbiomon_taglist_create(&taglist, 5, "tag1", "tag2", "tag3", "tag4", "tag5");
-
     symbiomon_metric_create("srini", "testmetric", SYMBIOMON_TYPE_COUNTER, "My first metric", taglist, &m, provider);
+
+
+    symbiomon_taglist_create(&taglist2, 3, "tag1", "tag2", "tag3");
+    symbiomon_metric_create("srini", "testmetric2", SYMBIOMON_TYPE_COUNTER, "My second metric", taglist2, &m2, provider);
+
+    symbiomon_taglist_create(&taglist3, 0);
+    symbiomon_metric_create("srini", "testmetric", SYMBIOMON_TYPE_COUNTER, "My third metric", taglist3, &m3, provider);
 
     symbiomon_metric_update(m, 14.5);
     symbiomon_metric_update(m, 15.5);
     symbiomon_metric_update(m, 16.5);
 
-    symbiomon_metric_destroy(m, provider);
 
-    symbiomon_taglist_destroy(taglist);
+
+    /*symbiomon_metric_destroy(m, provider);
+
+    symbiomon_taglist_destroy(taglist);*/
 
     margo_wait_for_finalize(mid);
 
