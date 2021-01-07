@@ -43,9 +43,9 @@ int main(int argc, char** argv)
     symbiomon_taglist_create(&taglist3, 0);
     symbiomon_metric_create("srini", "testmetric", SYMBIOMON_TYPE_COUNTER, "My third metric", taglist3, &m3, provider);
 
-    symbiomon_metric_update(m, 14.5);
-    symbiomon_metric_update(m, 15.5);
-    symbiomon_metric_update(m, 16.5);
+    symbiomon_metric_update(m2, 14.5);
+    symbiomon_metric_update(m2, 15.5);
+    symbiomon_metric_update(m2, 16.5);
 
 
 

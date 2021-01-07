@@ -34,6 +34,8 @@ typedef enum symbiomon_return_t {
     SYMBIOMON_ERR_OTHER              /* Other error */
 } symbiomon_return_t;
 
+#define METRIC_BUFFER_SIZE 100000
+
 /**
  * @brief Identifier for a metric.
  */
@@ -46,6 +48,20 @@ typedef enum symbiomon_metric_type {
    SYMBIOMON_TYPE_TIMER,
    SYMBIOMON_TYPE_GAUGE    
 } symbiomon_metric_type_t;
+
+typedef struct symbiomon_metric_sample {
+   double time;
+   double val;
+} symbiomon_metric_sample;
+
+typedef symbiomon_metric_sample* symbiomon_metric_buffer;
+
+typedef struct symbiomon_taglist {
+    char **taglist;
+    int num_tags;
+} symbiomon_taglist;
+
+typedef symbiomon_taglist* symbiomon_taglist_t;
 
 inline unsigned long hash(unsigned char *str);
 

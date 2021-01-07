@@ -20,6 +20,7 @@ typedef enum symbiomon_metric_type symbiomon_metric_type_t;
 typedef struct symbiomon_provider* symbiomon_provider_t;
 typedef struct symbiomon_taglist* symbiomon_taglist_t;
 typedef struct symbiomon_metric_sample* symbiomon_metric_buffer;
+typedef struct symbiomon_metric_sample symbiomon_metric_sample;
 typedef void (*func)();
 #define SYMBIOMON_METRIC_HANDLE_NULL ((symbiomon_metric_handle_t)NULL)
 
@@ -37,7 +38,7 @@ symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, symbiomo
 symbiomon_return_t symbiomon_remote_metric_handle_create(symbiomon_client_t client, hg_addr_t addr, uint16_t provider_id, symbiomon_metric_id_t metric_id, symbiomon_metric_handle_t* handle);
 symbiomon_return_t symbiomon_remote_metric_handle_ref_incr(symbiomon_metric_handle_t handle);
 symbiomon_return_t symbiomon_remote_metric_handle_release(symbiomon_metric_handle_t handle);
-symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handle, int64_t *num_samples_requested, symbiomon_metric_buffer *buf);
+symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handle, int64_t *num_samples_requested, symbiomon_metric_buffer *buf, char *name, char *ns);
 symbiomon_return_t symbiomon_remote_list_metrics(symbiomon_client_t client, hg_addr_t addr, uint16_t provider_id, symbiomon_metric_id_t* ids, size_t* count);
 
 #ifdef __cplusplus

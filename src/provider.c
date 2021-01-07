@@ -10,8 +10,6 @@
 #include "provider.h"
 #include "types.h"
 
-#define METRIC_BUFFER_SIZE 100000
-
 static void symbiomon_finalize_provider(void* p);
 
 /* Functions to manipulate the hash of metrics */
@@ -169,6 +167,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     symbiomon_return_t ret;
     metric_fetch_in_t  in;
     metric_fetch_out_t out;
+    hg_bulk_t local_bulk;
 
     /* find the margo instance */
     margo_instance_id mid = margo_hg_handle_get_instance(h);
@@ -185,13 +184,52 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
         goto finish;
     }
 
+    /* create a bulk reason */
+    symbiomon_metric_buffer b = calloc(in.count, sizeof(symbiomon_metric_sample));
+    hg_size_t buf_size = in.count * sizeof(symbiomon_metric_sample);
+    ret = margo_bulk_create(mid, 1, (void**)&b, &buf_size, HG_BULK_READ_ONLY, &local_bulk);
+
+    if(ret != HG_SUCCESS) {
+        margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", ret);
+        out.ret = SYMBIOMON_ERR_FROM_MERCURY;
+        goto finish;
+    }
+
+    symbiomon_metric* metric = find_metric(provider, &(in.metric_id));
+    if(!metric) {
+        out.ret = SYMBIOMON_ERR_INVALID_METRIC;
+	goto finish;
+    }
+
+    out.name = strdup(metric->name);
+    out.ns = strdup(metric->ns);
+
+    /* copyout metric buffer of requested size */
+    if(metric->buffer_index < in.count) {
+        out.actual_count = metric->buffer_index;
+        memcpy(b, metric->buffer, out.actual_count);
+    } else {
+	out.actual_count = in.count;
+        memcpy(b, metric->buffer + (metric->buffer_index - out.actual_count), out.actual_count);
+    }
+
+    /* do the bulk transfer */
+    ret = margo_bulk_transfer(mid, HG_BULK_PUSH, info->addr, in.bulk, 0, local_bulk, 0, buf_size);
+    if(ret != HG_SUCCESS) {
+        margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", ret);
+        out.ret = SYMBIOMON_ERR_FROM_MERCURY;
+        goto finish;
+    }
+
     /* set the response */
     out.ret = SYMBIOMON_SUCCESS;
 
 finish:
+    free(b);
     ret = margo_respond(h, &out);
     ret = margo_free_input(h, &in);
     margo_destroy(h);
+    margo_bulk_free(local_bulk);
 }
 static DEFINE_MARGO_RPC_HANDLER(symbiomon_metric_fetch_ult)
 

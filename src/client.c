@@ -117,9 +117,56 @@ symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, symbiomo
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handle, int64_t *num_samples_requested, symbiomon_metric_buffer *buf)
+symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handle, int64_t *num_samples_requested, symbiomon_metric_buffer *buf, char *name, char *ns)
 {
-    return SYMBIOMON_SUCCESS;
+    hg_handle_t h;
+    metric_fetch_in_t in;
+    metric_fetch_out_t out;
+    hg_bulk_t local_bulk;
+
+    hg_return_t ret;
+    in.metric_id = handle->metric_id;
+
+    if(*num_samples_requested >= METRIC_BUFFER_SIZE || *num_samples_requested < 0)
+        *num_samples_requested = METRIC_BUFFER_SIZE;
+
+    in.count = *num_samples_requested;
+
+    symbiomon_metric_buffer b = (symbiomon_metric_buffer)calloc(*num_samples_requested, sizeof(symbiomon_metric_sample));
+    hg_size_t segment_sizes[1] = {*num_samples_requested*sizeof(symbiomon_metric_sample)};
+    void *segment_ptrs[1] = {(void*)b};
+
+    margo_bulk_create(handle->client->mid, 1,  segment_ptrs, segment_sizes, HG_BULK_WRITE_ONLY, &local_bulk);
+    in.bulk = local_bulk;
+
+    ret = margo_create(handle->client->mid, handle->addr, handle->client->metric_fetch_id, &h);
+    if(ret != HG_SUCCESS)         
+        return SYMBIOMON_ERR_FROM_MERCURY; 
+
+    ret = margo_provider_forward(handle->provider_id, h, &in);
+    if(ret != HG_SUCCESS) {
+        margo_destroy(h);
+	return SYMBIOMON_ERR_FROM_MERCURY;
+    }
+
+    ret = margo_get_output(h, &out);
+    if(ret != HG_SUCCESS) {
+	margo_free_output(h, &out);
+        margo_destroy(h);
+	return SYMBIOMON_ERR_FROM_MERCURY;
+    }
+
+    *num_samples_requested = out.actual_count;
+    *buf = b;
+    name = strdup(out.name);
+    ns = strdup(out.ns);
+
+finish:
+    margo_free_output(h, &out);
+    margo_destroy(h);
+    margo_bulk_free(local_bulk);
+
+    return out.ret;
 }
 
 symbiomon_return_t symbiomon_remote_metric_handle_create(

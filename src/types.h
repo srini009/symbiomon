@@ -55,9 +55,14 @@ static inline hg_return_t hg_proc_list_metrics_out_t(hg_proc_t proc, void *data)
 }
 
 MERCURY_GEN_PROC(metric_fetch_in_t,
-        ((symbiomon_metric_id_t)(metric_id)))
+        ((symbiomon_metric_id_t)(metric_id))\
+	((int64_t)(count))\
+	((hg_bulk_t)(bulk)))
 
 MERCURY_GEN_PROC(metric_fetch_out_t,
+	((int64_t)(actual_count))\
+	((hg_string_t)(name))\
+	((hg_string_t)(ns))\
         ((int32_t)(ret)))
 
 /* Extra hand-coded serialization functions */
@@ -68,27 +73,13 @@ static inline hg_return_t hg_proc_symbiomon_metric_id_t(
     return hg_proc_memcpy(proc, id, sizeof(*id));
 }
 
-typedef struct symbiomon_metric_sample {
-   double time;
-   double val;
-} symbiomon_metric_sample;
-
-typedef symbiomon_metric_sample* symbiomon_metric_buffer;
-
-typedef struct symbiomon_taglist {
-    char **taglist;
-    int num_tags;
-} symbiomon_taglist;
-
-typedef symbiomon_taglist* symbiomon_taglist_t;
-
 typedef struct symbiomon_metric {
     symbiomon_metric_type_t type;
     symbiomon_metric_buffer buffer;
     unsigned int buffer_index;
     char desc[200];
-    char* name[36];
-    char* ns[36];
+    char name[36];
+    char ns[36];
     symbiomon_taglist_t taglist;
     symbiomon_metric_id_t id;
     UT_hash_handle      hh;
