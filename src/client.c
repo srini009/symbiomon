@@ -109,6 +109,11 @@ symbiomon_return_t symbiomon_metric_register_retrieval_callback(char *ns, func f
 /* APIs for remote monitoring clients */
 symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, symbiomon_taglist_t taglist, symbiomon_metric_id_t* metric_id)
 {
+    if(!ns || !name)
+        return SYMBIOMON_ERR_INVALID_NAME;
+
+    symbiomon_id_from_string_identifiers(ns, name, taglist->taglist, taglist->num_tags, metric_id);
+
     return SYMBIOMON_SUCCESS;
 }
 

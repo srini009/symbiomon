@@ -17,8 +17,8 @@
 
 int main(int argc, char** argv)
 {
-    if(argc != 4) {
-        fprintf(stderr,"Usage: %s <server address> <provider id> <metric id>\n", argv[0]);
+    if(argc != 3) {
+        fprintf(stderr,"Usage: %s <server address> <provider id>\n", argv[0]);
         exit(-1);
     }
 
@@ -46,8 +46,15 @@ int main(int argc, char** argv)
     }
 
     size_t count = 5;
-    symbiomon_metric_id_t ids;
-    ret = symbiomon_remote_list_metrics(symbiomon_clt, svr_addr, provider_id, &ids, &count);
+    symbiomon_metric_id_t *ids;
+    ret = symbiomon_remote_list_metrics(symbiomon_clt, svr_addr, provider_id, ids, &count);
+
+    symbiomon_taglist_t taglist;
+    symbiomon_taglist_create(&taglist, 3, "tag1", "tag2", "tag3");
+
+    symbiomon_metric_id_t id;
+    symbiomon_remote_metric_get_id("srini", "testmetric2", taglist, &id);
+    fprintf(stderr, "Retrieved metric id is: %\d\n", id);
 
     if(ret != SYMBIOMON_SUCCESS) {
 	fprintf(stderr, "symbiomon_remote_list_metrics failed (ret = %d)\n", ret);
