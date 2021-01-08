@@ -71,14 +71,20 @@ int main(int argc, char** argv)
     }
 
     int64_t num_samples_requested = 5;
-    char name[36], ns[36];
+    char *name, *ns;
     symbiomon_metric_buffer buf;
-    ret = symbiomon_remote_metric_fetch(symbiomon_rh, &num_samples_requested, &buf, name, ns);
+    ret = symbiomon_remote_metric_fetch(symbiomon_rh, &num_samples_requested, &buf, &name, &ns);
     fprintf(stderr, "Number of metrics fetched %d, with name %s and ns %s\n", num_samples_requested, name, ns);
     int i;
     symbiomon_metric_sample *b = buf;
     for (i = 0; i < num_samples_requested; i++) {
         fprintf(stderr, "Values are : %f, and %f\n", b->val, b->time);
+    }
+
+    margo_info(mid, "Releasing metric handle");
+    ret = symbiomon_remote_metric_handle_release(symbiomon_rh);
+    if(ret != SYMBIOMON_SUCCESS) {
+        FATAL(mid,"symbiomon_metric_handle_release failed (ret = %d)", ret);
     }
 
     margo_info(mid, "Finalizing client");

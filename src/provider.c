@@ -153,7 +153,7 @@ symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbio
     metric->buffer = (symbiomon_metric_buffer)calloc(METRIC_BUFFER_SIZE, sizeof(symbiomon_metric_sample));
     add_metric(provider, metric);
 
-    fprintf(stderr, "\nCreated metric %d of type \"%d\n", id, metric->type);
+    fprintf(stderr, "\nCreated metric %d of type %d\n", id, metric->type);
     fprintf(stderr, "Num metrics is: %d\n", provider->num_metrics);
 
     *m = metric;
@@ -201,16 +201,18 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
 	goto finish;
     }
 
-    out.name = strdup(metric->name);
-    out.ns = strdup(metric->ns);
+    out.name = (char*)malloc(36*sizeof(char));
+    out.ns = (char*)malloc(36*sizeof(char));
+    strcpy(out.name, metric->name);
+    strcpy(out.ns, metric->ns);
 
     /* copyout metric buffer of requested size */
     if(metric->buffer_index < in.count) {
         out.actual_count = metric->buffer_index;
-        memcpy(b, metric->buffer, out.actual_count);
+        memcpy(b, metric->buffer, out.actual_count*sizeof(symbiomon_metric_sample));
     } else {
 	out.actual_count = in.count;
-        memcpy(b, metric->buffer + (metric->buffer_index - out.actual_count), out.actual_count);
+        memcpy(b, metric->buffer + (metric->buffer_index - out.actual_count), out.actual_count*sizeof(symbiomon_metric_sample));
     }
 
     /* do the bulk transfer */

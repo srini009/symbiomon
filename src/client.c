@@ -117,7 +117,7 @@ symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, symbiomo
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handle, int64_t *num_samples_requested, symbiomon_metric_buffer *buf, char *name, char *ns)
+symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handle, int64_t *num_samples_requested, symbiomon_metric_buffer *buf, char **name, char **ns)
 {
     hg_handle_t h;
     metric_fetch_in_t in;
@@ -158,8 +158,10 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
 
     *num_samples_requested = out.actual_count;
     *buf = b;
-    name = strdup(out.name);
-    ns = strdup(out.ns);
+    *name = (char*)malloc(36*sizeof(char));
+    *ns = (char*)malloc(36*sizeof(char));
+    strcpy(*name, out.name);
+    strcpy(*ns, out.ns);
 
 finish:
     margo_free_output(h, &out);
