@@ -6,7 +6,6 @@
 #ifndef __SYMBIOMON_COMMON_H
 #define __SYMBIOMON_COMMON_H
 
-#include <uuid/uuid.h>
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -39,9 +38,7 @@ typedef enum symbiomon_return_t {
 /**
  * @brief Identifier for a metric.
  */
-typedef struct symbiomon_metric_id_t {
-    unsigned long uuid;
-} symbiomon_metric_id_t;
+typedef uint64_t symbiomon_metric_id_t;
 
 typedef enum symbiomon_metric_type {
    SYMBIOMON_TYPE_COUNTER,
@@ -68,11 +65,11 @@ inline unsigned long hash(char *str);
 inline void symbiomon_id_from_string_identifiers(char *ns, char *name, char **taglist, int num_tags, symbiomon_metric_id_t *id_);
 
 /* djb2 hash from Dan Bernstein */
-inline unsigned long
+inline uint64_t
 hash(char *str)
 {
-    unsigned long hash = 5381;
-    int c;
+    uint64_t hash = 5381;
+    uint64_t c;
 
     while (c = *str++)
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
@@ -85,18 +82,18 @@ inline void symbiomon_id_from_string_identifiers(char *ns, char *name, char **ta
 {
     symbiomon_metric_id_t id, temp_id;
 
-    id.uuid = hash(ns);
-    temp_id.uuid = hash(name);
-    id.uuid = id.uuid^temp_id.uuid;
+    id = hash(ns);
+    temp_id = hash(name);
+    id = id^temp_id;
 
     /* XOR all the tag ids, so that any ordering of tags returns the same final metric id */
     int i;
     for(i = 0; i < num_tags; i++) {
-	temp_id.uuid = hash(taglist[i]);
-	id.uuid = id.uuid^temp_id.uuid;
+	temp_id = hash(taglist[i]);
+	id = id^temp_id;
     }
    
-    id_->uuid = id.uuid;
+    *id_ = id;
 }
 
 #ifdef __cplusplus

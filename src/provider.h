@@ -8,7 +8,6 @@
 
 #include <margo.h>
 #include <abt-io.h>
-#include <uuid/uuid.h>
 #include "uthash.h"
 #include "types.h"
 
@@ -20,7 +19,7 @@ typedef struct symbiomon_provider {
     abt_io_instance_id abtio;               // ABT-IO instance
     /* Resources and backend types */
     size_t               num_metrics;     // number of metrics
-    symbiomon_metric*      metrics;         // hash of metrics by uuid
+    symbiomon_metric*      metrics;         // hash of metrics by id
     /* RPC identifiers for clients */
     hg_id_t list_metrics_id;
     hg_id_t metric_fetch_id;

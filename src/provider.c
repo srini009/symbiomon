@@ -135,7 +135,7 @@ symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbio
     if(!ns || !name)
         return SYMBIOMON_ERR_INVALID_NAME;
 
-    /* create a uuid for the new metric */
+    /* create an id for the new metric */
     symbiomon_metric_id_t id;
     symbiomon_id_from_string_identifiers(ns, name, tl->taglist, tl->num_tags, &id);
 
