@@ -14,8 +14,6 @@ static void symbiomon_finalize_provider(void* p);
 
 /* Functions to manipulate the hash of metrics */
 
-static inline unsigned long hash(unsigned char *str);
-
 static inline symbiomon_metric* find_metric(
         symbiomon_provider_t provider,
         const symbiomon_metric_id_t* id);
