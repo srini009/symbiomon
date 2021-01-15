@@ -69,7 +69,7 @@ inline void symbiomon_id_from_string_identifiers(char *ns, char *name, char **ta
 
 /* djb2 hash from Dan Bernstein */
 inline unsigned long
-hash(unsigned char *str)
+hash(char *str)
 {
     unsigned long hash = 5381;
     int c;
