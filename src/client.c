@@ -114,6 +114,7 @@ symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, symbiomo
 
     fprintf(stderr, "Got name and ns and tag: %s, %s, %s\n", name, ns, taglist->taglist[1]);
     symbiomon_id_from_string_identifiers(ns, name, taglist->taglist, taglist->num_tags, metric_id);
+    fprintf(stderr, "Got id: %d\n", *metric_id);
 
     return SYMBIOMON_SUCCESS;
 }
