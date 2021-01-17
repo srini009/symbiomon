@@ -168,7 +168,7 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     *ns = (char*)malloc(36*sizeof(char));
     strcpy(*name, out.name);
     strcpy(*ns, out.ns);
-    memcpy(*buf, b, (*num_samples_requested)*sizeof(symbiomon_metric_sample));
+    //memcpy(*buf, b, (*num_samples_requested)*sizeof(symbiomon_metric_sample));
     fprintf(stderr, "Are these getting through okay?\n");
 
 finish:
