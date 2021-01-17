@@ -129,7 +129,7 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     hg_return_t ret;
     in.metric_id = handle->metric_id;
 
-    fprintf(stderr, "Inside client: Got id: %u, num_samples: %u\n", in.metric_id, num_samples_requested);
+    fprintf(stderr, "Inside client: Got id: %u, num_samples: %u\n", in.metric_id, *num_samples_requested);
 
     if(*num_samples_requested >= METRIC_BUFFER_SIZE || *num_samples_requested < 0)
         *num_samples_requested = METRIC_BUFFER_SIZE;
@@ -147,11 +147,13 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     if(ret != HG_SUCCESS)         
         return SYMBIOMON_ERR_FROM_MERCURY; 
 
+    fprintf(stderr, "Bulk create is successful\n");
     ret = margo_provider_forward(handle->provider_id, h, &in);
     if(ret != HG_SUCCESS) {
         margo_destroy(h);
 	return SYMBIOMON_ERR_FROM_MERCURY;
     }
+    fprintf(stderr, "RPC is successful\n");
 
     ret = margo_get_output(h, &out);
     if(ret != HG_SUCCESS) {
