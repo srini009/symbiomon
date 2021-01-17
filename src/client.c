@@ -168,13 +168,13 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     *ns = (char*)malloc(36*sizeof(char));
     strcpy(*name, out.name);
     strcpy(*ns, out.ns);
-    fprintf(stderr "Are these getting through okay?\n");
+    fprintf(stderr, "Are these getting through okay?\n");
 
 finish:
     margo_free_output(h, &out);
     margo_destroy(h);
     margo_bulk_free(local_bulk);
-    fprintf(stderr "Are these getting through okay 2222?\n");
+    fprintf(stderr, "Are these getting through okay 2222?\n");
 
     return out.ret;
 }
