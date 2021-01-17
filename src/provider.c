@@ -182,7 +182,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
         goto finish;
     }
 
-    /* create a bulk reason */
+    /* create a bulk region */
     symbiomon_metric_buffer b = calloc(in.count, sizeof(symbiomon_metric_sample));
     hg_size_t buf_size = in.count * sizeof(symbiomon_metric_sample);
     ret = margo_bulk_create(mid, 1, (void**)&b, &buf_size, HG_BULK_READ_ONLY, &local_bulk);
@@ -203,7 +203,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     out.ns = (char*)malloc(36*sizeof(char));
     strcpy(out.name, metric->name);
     strcpy(out.ns, metric->ns);
-
+    fprintf(stderr, "From server: %s %s\n", out.name, out.ns);
     /* copyout metric buffer of requested size */
     if(metric->buffer_index < in.count) {
         out.actual_count = metric->buffer_index;
