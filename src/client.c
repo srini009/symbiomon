@@ -167,7 +167,7 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     fprintf(stderr, "Name and ns are %p, %p\n", name, ns);
     *name = (char*)malloc(36*sizeof(char));
     *ns = (char*)malloc(36*sizeof(char));
-    fprintf(stderr, "Name and ns are %p, %p\n", name, ns);
+    fprintf(stderr, "Name and ns are %s, %s\n", out.name, out.ns); 
     strcpy(*name, out.name);
     strcpy(*ns, out.ns);
     //memcpy(*buf, b, (*num_samples_requested)*sizeof(symbiomon_metric_sample));
