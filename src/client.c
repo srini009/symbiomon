@@ -163,7 +163,7 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     }
 
     *num_samples_requested = out.actual_count;
-    *buf = (symbiomon_metric_buffer)calloc(*num_samples_requested, sizeof(symbiomon_metric_sample));
+    //*buf = (symbiomon_metric_buffer)calloc(*num_samples_requested, sizeof(symbiomon_metric_sample));
     *name = (char*)malloc(36*sizeof(char));
     *ns = (char*)malloc(36*sizeof(char));
     strcpy(*name, out.name);
