@@ -163,14 +163,14 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     }
 
     *num_samples_requested = out.actual_count;
-    //*buf = (symbiomon_metric_buffer)calloc(*num_samples_requested, sizeof(symbiomon_metric_sample));
+    *buf = (symbiomon_metric_buffer)calloc(*num_samples_requested, sizeof(symbiomon_metric_sample));
     fprintf(stderr, "Name and ns are %p, %p\n", name, ns);
     *name = (char*)malloc(36*sizeof(char));
     *ns = (char*)malloc(36*sizeof(char));
     fprintf(stderr, "Name and ns are %s, %s\n", out.name, out.ns); 
     strcpy(*name, out.name);
     strcpy(*ns, out.ns);
-    //memcpy(*buf, b, (*num_samples_requested)*sizeof(symbiomon_metric_sample));
+    memcpy(*buf, b, (*num_samples_requested)*sizeof(symbiomon_metric_sample));
     fprintf(stderr, "Are these getting through okay?\n");
 
 finish:
