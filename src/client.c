@@ -129,6 +129,8 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     hg_return_t ret;
     in.metric_id = handle->metric_id;
 
+    fprintf(stderr, "Inside client: Got id: %u, num_samples: %u\n", in.metric_id, num_samples_requested);
+
     if(*num_samples_requested >= METRIC_BUFFER_SIZE || *num_samples_requested < 0)
         *num_samples_requested = METRIC_BUFFER_SIZE;
 
