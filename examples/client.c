@@ -78,7 +78,7 @@ int main(int argc, char** argv)
     int i;
     symbiomon_metric_sample *b = buf;
     for (i = 0; i < num_samples_requested; i++) {
-        fprintf(stderr, "Values are : %f, and %f\n", b->val, b->time);
+        fprintf(stderr, "Values are : %f, and %f\n", b[i].val, b[i].time);
     }
 
     margo_info(mid, "Releasing metric handle");
