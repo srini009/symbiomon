@@ -38,7 +38,7 @@ typedef enum symbiomon_return_t {
 /**
  * @brief Identifier for a metric.
  */
-typedef uint64_t symbiomon_metric_id_t;
+typedef uint32_t symbiomon_metric_id_t;
 
 typedef enum symbiomon_metric_type {
    SYMBIOMON_TYPE_COUNTER,
@@ -65,11 +65,11 @@ inline unsigned long hash(char *str);
 inline void symbiomon_id_from_string_identifiers(char *ns, char *name, char **taglist, int num_tags, symbiomon_metric_id_t *id_);
 
 /* djb2 hash from Dan Bernstein */
-inline uint64_t
+inline uint32_t
 hash(char *str)
 {
-    uint64_t hash = 5381;
-    uint64_t c;
+    uint32_t hash = 5381;
+    uint32_t c;
 
     while ((c = *str++)) {
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
