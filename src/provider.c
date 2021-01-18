@@ -323,12 +323,15 @@ static inline symbiomon_return_t add_metric(
         symbiomon_provider_t provider,
         symbiomon_metric* metric)
 {
+    fprintf(stderr,"Provider has added: %u\n", metric->id);
+
     symbiomon_metric* existing = find_metric(provider, &(metric->id));
     if(existing) {
         return SYMBIOMON_ERR_INVALID_METRIC;
     }
     HASH_ADD(hh, provider->metrics, id, sizeof(symbiomon_metric_id_t), metric);
     provider->num_metrics += 1;
+    fprintf(stderr, "Metric successfully added: %u\n", metric->id);
     return SYMBIOMON_SUCCESS;
 }
 
