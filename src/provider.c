@@ -194,7 +194,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     }
 
     fprintf(stderr, "Yo, do I get here with metric_id: %u?\n", in.metric_id);
-    symbiomon_metric_id_t requested id = in.metric_id;
+    symbiomon_metric_id_t requested_id = in.metric_id;
     symbiomon_metric* metric = find_metric(provider, &(requested_id));
     if(!metric) {
         out.ret = SYMBIOMON_ERR_INVALID_METRIC;
