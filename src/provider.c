@@ -316,7 +316,8 @@ static inline symbiomon_metric* find_metric(
         const symbiomon_metric_id_t* id)
 {
     symbiomon_metric* metric = NULL;
-    fprintf(stderr, "While finding, provider id: %d and num metrics is :%d\n", provider->provider_id, provider->num_metrics);
+    fprintf(stderr, "While finding metric, provider id: %d and num metrics is :%d\n", provider->provider_id, provider->num_metrics);
+
     HASH_FIND(hh, provider->metrics, id, sizeof(symbiomon_metric_id_t), metric);
     return metric;
 }
@@ -333,16 +334,10 @@ static inline symbiomon_return_t add_metric(
     }
     HASH_ADD(hh, provider->metrics, id, sizeof(symbiomon_metric_id_t), metric);
     provider->num_metrics += 1;
-    fprintf(stderr, "Metric successfully added: %u\n", metric->id);
 
     symbiomon_metric* existing_ = find_metric(provider, &(metric->id));
-    if(!existing) {
-        fprintf(stderr, "Jesus!!!\n");
-        if(!provider->metrics) {
-         fprintf(stderr, "Jesus effing Christ!\n");
-        } else {
-          fprintf(stderr, "Head is :%u\n", provider->metrics->id);
-        }
+    if(!existing_) {
+        fprintf(stderr, "Jesus!!! I can't find the metric once I have added\n");
     }
 
     return SYMBIOMON_SUCCESS;
