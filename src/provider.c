@@ -315,7 +315,7 @@ static inline symbiomon_metric* find_metric(
         const symbiomon_metric_id_t* id)
 {
     symbiomon_metric* metric = NULL;
-    fprintf(stderr, "While finding, provider num metrics is :%d\n", provider->num_metrics);
+    fprintf(stderr, "While finding, provider id: %d and num metrics is :%d\n", provider->provider_id, provider->num_metrics);
     HASH_FIND(hh, provider->metrics, id, sizeof(symbiomon_metric_id_t), metric);
     return metric;
 }
