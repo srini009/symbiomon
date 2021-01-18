@@ -60,7 +60,7 @@ typedef struct symbiomon_taglist {
 
 typedef symbiomon_taglist* symbiomon_taglist_t;
 
-inline unsigned long hash(char *str);
+inline uint32_t hash(char *str);
 
 inline void symbiomon_id_from_string_identifiers(char *ns, char *name, char **taglist, int num_tags, symbiomon_metric_id_t *id_);
 
