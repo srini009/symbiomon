@@ -193,7 +193,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
         goto finish;
     }
 
-    fprintf(stderr, "Inside server provider ULT for metric fetch: I get here with metric_id, and provider_id: %lu, %u\n", in.metric_id, provider->provider_id);
+    fprintf(stderr, "Inside server provider ULT for metric fetch: I get here with metric_id, and provider_id, and provider head metric: %lu, %u, %lu\n", in.metric_id, provider->provider_id, provider->metrics->id);
     symbiomon_metric_id_t requested_id = in.metric_id;
     symbiomon_metric* metric = find_metric(provider, &(requested_id));
     if(!metric) {
