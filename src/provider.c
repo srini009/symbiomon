@@ -338,8 +338,11 @@ static inline symbiomon_return_t add_metric(
     symbiomon_metric* existing_ = find_metric(provider, &(metric->id));
     if(!existing) {
         fprintf(stderr, "Jesus!!!\n");
-        if(!provider->metrics)
+        if(!provider->metrics) {
          fprintf(stderr, "Jesus effing Christ!\n");
+        } else {
+          fprintf(stderr, "Head is :%u\n", provider->metrics->id);
+        }
     }
 
     return SYMBIOMON_SUCCESS;
