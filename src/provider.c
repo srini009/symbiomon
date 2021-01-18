@@ -193,22 +193,19 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
         goto finish;
     }
 
-    fprintf(stderr, "Inside server provider ULT for metric fetch: I get here with metric_id, and provider_id, and provider head metric: %u, %u, %u\n", in.metric_id, provider->provider_id, provider->metrics->id);
     symbiomon_metric_id_t requested_id = in.metric_id;
     symbiomon_metric* metric = find_metric(provider, &(requested_id));
     if(!metric) {
         out.ret = SYMBIOMON_ERR_INVALID_METRIC;
-        fprintf(stderr, "Woah! Invalid metric???\n");
 	goto finish;
     }
 
-    fprintf(stderr, "But I do not get here?\n");
 
     out.name = (char*)malloc(36*sizeof(char));
     out.ns = (char*)malloc(36*sizeof(char));
     strcpy(out.name, metric->name);
     strcpy(out.ns, metric->ns);
-    fprintf(stderr, "From server: %s %s\n", out.name, out.ns);
+
     /* copyout metric buffer of requested size */
     if(metric->buffer_index < in.count) {
         out.actual_count = metric->buffer_index;
@@ -317,11 +314,8 @@ static inline symbiomon_metric* find_metric(
         const symbiomon_metric_id_t* id)
 {
     symbiomon_metric* metric = NULL;
-    fprintf(stderr, "While finding metric, provider id: %d and num metrics is :%d\n", provider->provider_id, provider->num_metrics);
 
     HASH_FIND(hh, provider->metrics, id, sizeof(symbiomon_metric_id_t), metric);
-    if(!metric)
-      fprintf(stderr, "Oh no! Can't find the metric with id: %u\n", *id);
     return metric;
 }
 
@@ -329,7 +323,6 @@ static inline symbiomon_return_t add_metric(
         symbiomon_provider_t provider,
         symbiomon_metric* metric)
 {
-    fprintf(stderr,"Provider has added: %u\n", metric->id);
 
     symbiomon_metric* existing = find_metric(provider, &(metric->id));
     if(existing) {
@@ -337,11 +330,6 @@ static inline symbiomon_return_t add_metric(
     }
     HASH_ADD(hh, provider->metrics, id, sizeof(symbiomon_metric_id_t), metric);
     provider->num_metrics += 1;
-
-    symbiomon_metric* existing_ = find_metric(provider, &(metric->id));
-    if(!existing_) {
-        fprintf(stderr, "Jesus!!! I can't find the metric once I have added\n");
-    }
 
     return SYMBIOMON_SUCCESS;
 }
