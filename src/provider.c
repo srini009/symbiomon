@@ -199,6 +199,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
         out.ret = SYMBIOMON_ERR_INVALID_METRIC;
 	goto finish;
     }
+    fprintf(stderr, "But I do not get here?\n");
 
     out.name = (char*)malloc(36*sizeof(char));
     out.ns = (char*)malloc(36*sizeof(char));
