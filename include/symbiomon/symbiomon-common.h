@@ -60,13 +60,13 @@ typedef struct symbiomon_taglist {
 
 typedef symbiomon_taglist* symbiomon_taglist_t;
 
-inline uint32_t hash(char *str);
+inline uint32_t symbiomon_hash(char *str);
 
 inline void symbiomon_id_from_string_identifiers(char *ns, char *name, char **taglist, int num_tags, symbiomon_metric_id_t *id_);
 
 /* djb2 hash from Dan Bernstein */
 inline uint32_t
-hash(char *str)
+symbiomon_hash(char *str)
 {
     uint32_t hash = 5381;
     uint32_t c;
@@ -83,14 +83,14 @@ inline void symbiomon_id_from_string_identifiers(char *ns, char *name, char **ta
 {
     symbiomon_metric_id_t id, temp_id;
 
-    id = hash(ns);
-    temp_id = hash(name);
+    id = symbiomon_hash(ns);
+    temp_id = symbiomon_hash(name);
     id = id^temp_id;
 
     /* XOR all the tag ids, so that any ordering of tags returns the same final metric id */
     int i;
     for(i = 0; i < num_tags; i++) {
-	temp_id = hash(taglist[i]);
+	temp_id = symbiomon_hash(taglist[i]);
 	id = id^temp_id;
     }
    
