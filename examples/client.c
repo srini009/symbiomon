@@ -47,7 +47,8 @@ int main(int argc, char** argv)
 
     size_t count = 5;
     symbiomon_metric_id_t *ids;
-    ret = symbiomon_remote_list_metrics(symbiomon_clt, svr_addr, provider_id, ids, &count);
+    ids = (symbiomon_metric_id_t *)malloc(count*sizeof(symbiomon_metric_id_t));
+    ret = symbiomon_remote_list_metrics(symbiomon_clt, svr_addr, provider_id, &ids, &count);
 
     symbiomon_taglist_t taglist;
     symbiomon_taglist_create(&taglist, 3, "tag1", "tag2", "tag3");
@@ -60,6 +61,9 @@ int main(int argc, char** argv)
 	fprintf(stderr, "symbiomon_remote_list_metrics failed (ret = %d)\n", ret);
     } else {
 	fprintf(stderr, "Retrieved a total of %lu metrics\n", count);
+        size_t j = 0;
+        for(j = 0; j < count; j++)
+           fprintf(stderr, "Retrieved metric with id: %d\n", ids[j]);
     }
 
     ret = symbiomon_remote_metric_handle_create(

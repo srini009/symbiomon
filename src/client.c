@@ -242,7 +242,7 @@ symbiomon_return_t symbiomon_remote_metric_handle_release(symbiomon_metric_handl
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_remote_list_metrics(symbiomon_client_t client, hg_addr_t addr, uint16_t provider_id, symbiomon_metric_id_t* ids, size_t* count)
+symbiomon_return_t symbiomon_remote_list_metrics(symbiomon_client_t client, hg_addr_t addr, uint16_t provider_id, symbiomon_metric_id_t** ids, size_t* count)
 {
     hg_handle_t h;
     list_metrics_in_t  in;
@@ -271,8 +271,7 @@ symbiomon_return_t symbiomon_remote_list_metrics(symbiomon_client_t client, hg_a
     ret = out.ret;
     if(ret == SYMBIOMON_SUCCESS) {
         *count = out.count;
-	ids = (symbiomon_metric_id_t*)malloc(out.count*sizeof(symbiomon_metric_id_t));
-        memcpy(ids, out.ids, out.count*sizeof(*ids));
+        memcpy(*ids, out.ids, out.count*sizeof(symbiomon_metric_id_t));
     }
     
     margo_free_output(h, &out);
