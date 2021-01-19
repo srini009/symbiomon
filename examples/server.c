@@ -6,9 +6,22 @@
 #include <assert.h>
 #include <stdio.h>
 #include <margo.h>
+#include <sys/time.h>
+#include <signal.h>
 #include <symbiomon/symbiomon-server.h>
 #include <symbiomon/symbiomon-metric.h>
 #include <symbiomon/symbiomon-common.h>
+
+symbiomon_metric_t m, m2, m3;
+
+void metric_update(int signum)
+{  
+    static int i = 0;
+    symbiomon_metric_update(m2, 9+i*1.1);
+    signal(SIGALRM, metric_update);
+    alarm(1);
+    i++;
+}
 
 int main(int argc, char** argv)
 {
@@ -30,7 +43,6 @@ int main(int argc, char** argv)
     symbiomon_provider_t provider;
     symbiomon_provider_register(mid, 42, &args, &provider);
 
-    symbiomon_metric_t m, m2, m3;
     symbiomon_taglist_t taglist, taglist2, taglist3;
 
     symbiomon_taglist_create(&taglist, 5, "tag1", "tag2", "tag3", "tag4", "tag5");
@@ -43,12 +55,9 @@ int main(int argc, char** argv)
     symbiomon_taglist_create(&taglist3, 0);
     symbiomon_metric_create("srini", "testmetric", SYMBIOMON_TYPE_COUNTER, "My third metric", taglist3, &m3, provider);
 
-    symbiomon_metric_update(m2, 14.5);
-    symbiomon_metric_update(m2, 15.5);
-    symbiomon_metric_update(m2, 16.5);
 
-
-
+    signal(SIGALRM, metric_update);
+    alarm(2);
     /*symbiomon_metric_destroy(m, provider);
 
     symbiomon_taglist_destroy(taglist);*/

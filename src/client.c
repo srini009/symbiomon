@@ -75,6 +75,8 @@ symbiomon_return_t symbiomon_taglist_destroy(symbiomon_taglist_t taglist)
     free(taglist->taglist);
     free(taglist);
 
+    return SYMBIOMON_SUCCESS;
+
 }
 
 symbiomon_return_t symbiomon_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* m, symbiomon_provider_t p)
@@ -94,6 +96,17 @@ symbiomon_return_t symbiomon_metric_destroy_all(symbiomon_provider_t p)
 
 symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
 {
+    switch(m->type) {
+        case SYMBIOMON_TYPE_COUNTER:
+          if((m->buffer_index >=1) && (m->buffer[m->buffer_index-1] > val)) 
+              return SYMBIOMON_ERR_INVALID_VALUE;
+          break;
+        case SYMBIOMON_TYPE_TIMER:
+          if(val < 0)
+              return SYMBIOMON_ERR_INVALID_VALUE;
+          break;
+    }
+        
     m->buffer[m->buffer_index].val = val;
     m->buffer[m->buffer_index].time = ABT_get_wtime();
     m->buffer_index++;
