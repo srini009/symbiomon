@@ -45,7 +45,7 @@ int main(int argc, char** argv)
         FATAL(mid,"symbiomon_client_init failed (ret = %d)", ret);
     }
 
-    size_t count = 5;
+    uint32_t count = 5;
     symbiomon_metric_id_t *ids;
     ids = (symbiomon_metric_id_t *)malloc(count*sizeof(symbiomon_metric_id_t));
     ret = symbiomon_remote_list_metrics(symbiomon_clt, svr_addr, provider_id, &ids, &count);
