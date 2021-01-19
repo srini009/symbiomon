@@ -26,4 +26,9 @@ typedef struct symbiomon_provider {
     /* ... add other RPC identifiers here ... */
 } symbiomon_provider;
 
+symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider);
+
+symbiomon_return_t symbiomon_provider_metric_destroy(symbiomon_metric_t m, symbiomon_provider_t provider);
+
+symbiomon_return_t symbiomon_provider_destroy_all_metrics(symbiomon_provider_t provider);
 #endif

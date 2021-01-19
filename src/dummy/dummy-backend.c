@@ -9,12 +9,12 @@
 #include "dummy-backend.h"
 
 typedef struct dummy_context {
+  int dummy_member;
     /* ... */
 } dummy_context;
 
 static symbiomon_return_t dummy_create_metric(
         symbiomon_provider_t provider,
-        const char* config_str,
         void** context)
 {
     (void)provider;
@@ -26,7 +26,6 @@ static symbiomon_return_t dummy_create_metric(
 
 static symbiomon_return_t dummy_open_metric(
         symbiomon_provider_t provider,
-        const char* config_str,
         void** context)
 {
     (void)provider;

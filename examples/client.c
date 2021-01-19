@@ -54,12 +54,12 @@ int main(int argc, char** argv)
 
     symbiomon_metric_id_t id;
     symbiomon_remote_metric_get_id("srini", "testmetric2", taglist, &id);
-    fprintf(stderr, "Retrieved metric id is: %\d\n", id);
+    fprintf(stderr, "Retrieved metric id is: %d\n", id);
 
     if(ret != SYMBIOMON_SUCCESS) {
 	fprintf(stderr, "symbiomon_remote_list_metrics failed (ret = %d)\n", ret);
     } else {
-	fprintf(stderr, "Retrieved a total of %d metrics\n", count);
+	fprintf(stderr, "Retrieved a total of %lu metrics\n", count);
     }
 
     ret = symbiomon_remote_metric_handle_create(
@@ -74,7 +74,7 @@ int main(int argc, char** argv)
     char *name, *ns;
     symbiomon_metric_buffer buf;
     ret = symbiomon_remote_metric_fetch(symbiomon_rh, &num_samples_requested, &buf, &name, &ns);
-    fprintf(stderr, "Number of metrics fetched %d, with name %s and ns %s\n", num_samples_requested, name, ns);
+    fprintf(stderr, "Number of metrics fetched %lu, with name %s and ns %s\n", num_samples_requested, name, ns);
     int i;
     symbiomon_metric_sample *b = buf;
     for (i = 0; i < num_samples_requested; i++) {

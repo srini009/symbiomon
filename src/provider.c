@@ -24,8 +24,7 @@ static inline symbiomon_return_t add_metric(
 
 static inline symbiomon_return_t remove_metric(
         symbiomon_provider_t provider,
-        const symbiomon_metric_id_t* id,
-        int close_metric);
+        const symbiomon_metric_id_t* id);
 
 static inline void remove_all_metrics(
         symbiomon_provider_t provider);
@@ -152,7 +151,7 @@ symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbio
     add_metric(provider, metric);
 
     fprintf(stderr, "\nCreated metric %d of type %d\n", id, metric->type);
-    fprintf(stderr, "Num metrics is: %d\n", provider->num_metrics);
+    fprintf(stderr, "Num metrics is: %lu\n", provider->num_metrics);
 
     *m = metric;
 
@@ -162,7 +161,6 @@ symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbio
 static void symbiomon_metric_fetch_ult(hg_handle_t h)
 {
     hg_return_t hret;
-    symbiomon_return_t ret;
     metric_fetch_in_t  in;
     metric_fetch_out_t out;
     hg_bulk_t local_bulk;
@@ -185,10 +183,10 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     /* create a bulk region */
     symbiomon_metric_buffer b = calloc(in.count, sizeof(symbiomon_metric_sample));
     hg_size_t buf_size = in.count * sizeof(symbiomon_metric_sample);
-    ret = margo_bulk_create(mid, 1, (void**)&b, &buf_size, HG_BULK_READ_ONLY, &local_bulk);
+    hret = margo_bulk_create(mid, 1, (void**)&b, &buf_size, HG_BULK_READ_ONLY, &local_bulk);
 
-    if(ret != HG_SUCCESS) {
-        margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", ret);
+    if(hret != HG_SUCCESS) {
+        margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", hret);
         out.ret = SYMBIOMON_ERR_FROM_MERCURY;
         goto finish;
     }
@@ -216,9 +214,9 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     }
 
     /* do the bulk transfer */
-    ret = margo_bulk_transfer(mid, HG_BULK_PUSH, info->addr, in.bulk, 0, local_bulk, 0, buf_size);
-    if(ret != HG_SUCCESS) {
-        margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", ret);
+    hret = margo_bulk_transfer(mid, HG_BULK_PUSH, info->addr, in.bulk, 0, local_bulk, 0, buf_size);
+    if(hret != HG_SUCCESS) {
+        margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", hret);
         out.ret = SYMBIOMON_ERR_FROM_MERCURY;
         goto finish;
     }
@@ -228,8 +226,8 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
 
 finish:
     free(b);
-    ret = margo_respond(h, &out);
-    ret = margo_free_input(h, &in);
+    hret = margo_respond(h, &out);
+    hret = margo_free_input(h, &in);
     margo_destroy(h);
     margo_bulk_free(local_bulk);
 }
@@ -245,7 +243,7 @@ symbiomon_return_t symbiomon_provider_metric_destroy(symbiomon_metric_t m, symbi
     }
 
     /* remove the metric from the provider */
-    remove_metric(provider, &metric->id, 1);
+    remove_metric(provider, &metric->id);
 
     return SYMBIOMON_SUCCESS;
 }
@@ -302,9 +300,7 @@ finish:
 }
 static DEFINE_MARGO_RPC_HANDLER(symbiomon_list_metrics_ult)
 
-symbiomon_return_t symbiomon_provider_register_backend(
-        symbiomon_provider_t provider,
-        symbiomon_backend_impl* backend_impl)
+symbiomon_return_t symbiomon_provider_register_backend()
 {
     return SYMBIOMON_SUCCESS;
 }
@@ -336,8 +332,7 @@ static inline symbiomon_return_t add_metric(
 
 static inline symbiomon_return_t remove_metric(
         symbiomon_provider_t provider,
-        const symbiomon_metric_id_t* id,
-        int close_metric)
+        const symbiomon_metric_id_t* id)
 {
     symbiomon_metric* metric = find_metric(provider, id);
     if(!metric) {

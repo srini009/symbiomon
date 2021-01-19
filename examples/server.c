@@ -8,6 +8,7 @@
 #include <margo.h>
 #include <sys/time.h>
 #include <signal.h>
+#include <unistd.h>
 #include <symbiomon/symbiomon-server.h>
 #include <symbiomon/symbiomon-metric.h>
 #include <symbiomon/symbiomon-common.h>
@@ -18,7 +19,7 @@ void metric_update(int signum)
 {  
     static int i = 0;
     symbiomon_metric_update(m2, 9+i*1.1);
-    signal(SIGALRM, metric_update);
+    signal(signum, metric_update);
     alarm(1);
     i++;
 }

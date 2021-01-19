@@ -9,8 +9,8 @@
 #include <symbiomon/symbiomon-server.h>
 #include <symbiomon/symbiomon-common.h>
 
-typedef symbiomon_return_t (*symbiomon_backend_create_fn)(symbiomon_provider_t, const char*, void**);
-typedef symbiomon_return_t (*symbiomon_backend_open_fn)(symbiomon_provider_t, const char*, void**);
+typedef symbiomon_return_t (*symbiomon_backend_create_fn)(symbiomon_provider_t, void**);
+typedef symbiomon_return_t (*symbiomon_backend_open_fn)(symbiomon_provider_t, void**);
 typedef symbiomon_return_t (*symbiomon_backend_close_fn)(void*);
 typedef symbiomon_return_t (*symbiomon_backend_destroy_fn)(void*);
 
@@ -44,8 +44,6 @@ typedef struct symbiomon_backend_impl {
  *
  * @return SYMBIOMON_SUCCESS or error code defined in symbiomon-common.h 
  */
-symbiomon_return_t symbiomon_provider_register_backend(
-        symbiomon_provider_t provider,
-        symbiomon_backend_impl* backend_impl);
+symbiomon_return_t symbiomon_provider_register_backend();
 
 #endif

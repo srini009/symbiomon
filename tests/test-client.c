@@ -20,7 +20,6 @@ struct test_context {
 
 static const char* token = "ABCDEFGH";
 static const uint16_t provider_id = 42;
-static const char* backend_config = "{ \"foo\" : \"bar\" }";
 
 static void* test_context_setup(const MunitParameter params[], void* user_data)
 {
@@ -30,7 +29,7 @@ static void* test_context_setup(const MunitParameter params[], void* user_data)
     margo_instance_id   mid;
     hg_addr_t           addr;
     symbiomon_admin_t       admin;
-    symbiomon_metric_id_t id;
+    symbiomon_metric_id_t id = 0;
     // create margo instance
     mid = margo_init("na+sm", MARGO_SERVER_MODE, 0, 0);
     munit_assert_not_null(mid);
@@ -161,7 +160,6 @@ static MunitResult test_sum(const MunitParameter params[], void* data)
             context->addr, provider_id, context->id, &rh);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
     // test that we can send a sum RPC to the metric
-    int32_t result = 0;
     // test that we can destroy the metric handle
     ret = symbiomon_remote_metric_handle_release(rh);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
@@ -179,7 +177,7 @@ static MunitResult test_invalid(const MunitParameter params[], void* data)
     struct test_context* context = (struct test_context*)data;
     symbiomon_client_t client;
     symbiomon_metric_handle_t rh1, rh2;
-    symbiomon_metric_id_t invalid_id;
+    symbiomon_metric_id_t invalid_id = 0;
     symbiomon_return_t ret;
     // test that we can create a client object
     ret = symbiomon_client_init(context->mid, &client);

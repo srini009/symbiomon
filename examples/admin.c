@@ -26,8 +26,6 @@ int main(int argc, char** argv)
     symbiomon_admin_t admin;
     hg_addr_t svr_addr;
     const char* svr_addr_str = argv[1];
-    uint16_t    provider_id  = atoi(argv[2]);
-    symbiomon_metric_id_t id;
 
     margo_instance_id mid = margo_init("na+sm://", MARGO_CLIENT_MODE, 0, 0);
     assert(mid);

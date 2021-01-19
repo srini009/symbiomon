@@ -15,10 +15,7 @@ struct test_context {
 };
 
 static const char* valid_token = "ABCDEFGH";
-static const char* wrong_token = "HGFEDCBA";
 static const uint16_t provider_id = 42;
-static const char* backend_config = "{ \"foo\" : \"bar\" }";
-
 
 static void* test_context_setup(const MunitParameter params[], void* user_data)
 {
@@ -81,7 +78,6 @@ static MunitResult test_metric(const MunitParameter params[], void* data)
     struct test_context* context = (struct test_context*)data;
     symbiomon_admin_t admin;
     symbiomon_return_t ret;
-    symbiomon_metric_id_t id;
     // test that we can create an admin object
     ret = symbiomon_admin_init(context->mid, &admin);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);
@@ -100,7 +96,6 @@ static MunitResult test_invalid(const MunitParameter params[], void* data)
     struct test_context* context = (struct test_context*)data;
     symbiomon_admin_t admin;
     symbiomon_return_t ret;
-    symbiomon_metric_id_t id;
     // test that we can create an admin object
     ret = symbiomon_admin_init(context->mid, &admin);
     munit_assert_int(ret, ==, SYMBIOMON_SUCCESS);

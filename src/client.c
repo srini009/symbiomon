@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include "types.h"
 #include "client.h"
+#include "provider.h"
 #include "symbiomon/symbiomon-client.h"
 #include "symbiomon/symbiomon-common.h"
 
@@ -98,12 +99,14 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
 {
     switch(m->type) {
         case SYMBIOMON_TYPE_COUNTER:
-          if((m->buffer_index >=1) && (m->buffer[m->buffer_index-1] > val)) 
+          if((m->buffer_index >=1) && (m->buffer[m->buffer_index-1].val > val)) 
               return SYMBIOMON_ERR_INVALID_VALUE;
           break;
         case SYMBIOMON_TYPE_TIMER:
           if(val < 0)
               return SYMBIOMON_ERR_INVALID_VALUE;
+          break;
+        case SYMBIOMON_TYPE_GAUGE:
           break;
     }
         
@@ -116,6 +119,8 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
 
 symbiomon_return_t symbiomon_metric_register_retrieval_callback(char *ns, func f)
 {
+    fprintf(stderr, "Callback function for namespace: %s is not yet implmented\n", ns);
+
     return SYMBIOMON_SUCCESS;
 }
 
@@ -176,7 +181,6 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     strcpy(*name, out.name);
     strcpy(*ns, out.ns);
 
-finish:
     margo_free_output(h, &out);
     margo_destroy(h);
     margo_bulk_free(local_bulk);
