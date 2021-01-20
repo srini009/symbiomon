@@ -129,10 +129,14 @@ int symbiomon_provider_destroy(
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider)
 {
     if(!ns || !name)
         return SYMBIOMON_ERR_INVALID_NAME;
+
+    /* check if metric exists, and if it does, return quickly */
+    if(m && find_metric(provider, &((*m)->id)))
+        return SYMBIOMON_SUCCESS;
 
     /* create an id for the new metric */
     symbiomon_metric_id_t id;

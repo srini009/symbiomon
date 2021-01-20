@@ -48,6 +48,9 @@ symbiomon_return_t symbiomon_client_finalize(symbiomon_client_t client)
 /* APIs for microservice clients */
 symbiomon_return_t symbiomon_taglist_create(symbiomon_taglist_t *taglist, int num_tags, ...) 
 {
+    if(!*taglist)
+        return SYMBIOMON_SUCCESS;
+
     *taglist = (symbiomon_taglist_t)malloc(sizeof(symbiomon_taglist));
     va_list valist;
     va_start(valist, num_tags);
@@ -80,7 +83,7 @@ symbiomon_return_t symbiomon_taglist_destroy(symbiomon_taglist_t taglist)
 
 }
 
-symbiomon_return_t symbiomon_metric_create(char *ns, char *name, symbiomon_metric_type_t t, char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* m, symbiomon_provider_t p)
+symbiomon_return_t symbiomon_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* m, symbiomon_provider_t p)
 {
     return symbiomon_provider_metric_create(ns, name, t, desc, taglist, m, p);
 }
