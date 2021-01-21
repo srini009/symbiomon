@@ -109,10 +109,14 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
         case SYMBIOMON_TYPE_GAUGE:
           break;
     }
+  
+    ABT_mutex_lock(m->metric_mutex);
         
     m->buffer[m->buffer_index].val = val;
     m->buffer[m->buffer_index].time = ABT_get_wtime();
     m->buffer_index++;
+
+    ABT_mutex_unlock(m->metric_mutex);
 
     return SYMBIOMON_SUCCESS;
 }

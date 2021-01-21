@@ -144,6 +144,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
 
     /* allocate a metric, set it up, and add it to the provider */
     symbiomon_metric* metric = (symbiomon_metric*)calloc(1, sizeof(*metric));
+    ABT_mutex_create(&metric->metric_mutex);
     metric->id  = id;
     strcpy(metric->name, name);
     strcpy(metric->ns, ns);
@@ -248,6 +249,9 @@ symbiomon_return_t symbiomon_provider_metric_destroy(symbiomon_metric_t m, symbi
 
     /* remove the metric from the provider */
     remove_metric(provider, &metric->id);
+
+    ABT_mutex_free(&metric->metric_mutex);
+    free(metric->buffer);
 
     return SYMBIOMON_SUCCESS;
 }

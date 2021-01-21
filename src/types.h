@@ -83,6 +83,7 @@ typedef struct symbiomon_metric {
     symbiomon_taglist_t taglist;
     symbiomon_metric_id_t id;
     UT_hash_handle      hh;
+    ABT_mutex metric_mutex; /* Needed because metric can be updated simulateneously by many ULTs */
 } symbiomon_metric;
 
 typedef symbiomon_metric* symbiomon_metric_t;
