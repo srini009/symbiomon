@@ -7,6 +7,7 @@
 #define _PARAMS_H
 
 #include <mercury.h>
+#include <abt.h>
 #include <mercury_macros.h>
 #include <mercury_proc.h>
 #include <mercury_proc_string.h>
