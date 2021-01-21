@@ -48,9 +48,6 @@ symbiomon_return_t symbiomon_client_finalize(symbiomon_client_t client)
 /* APIs for microservice clients */
 symbiomon_return_t symbiomon_taglist_create(symbiomon_taglist_t *taglist, int num_tags, ...) 
 {
-    if(!*taglist)
-        return SYMBIOMON_SUCCESS;
-
     *taglist = (symbiomon_taglist_t)malloc(sizeof(symbiomon_taglist));
     va_list valist;
     va_start(valist, num_tags);
