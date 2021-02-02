@@ -135,15 +135,15 @@ symbiomon_return_t symbiomon_metric_dump_histogram(symbiomon_metric_t m, const c
     int i = 0; 
     size_t *buckets = (size_t*)calloc(num_buckets, sizeof(size_t));
     for(i = 0 ; i < m->buffer_index; i++) {
-        if(m->buffer[i] > max)
-            max = m->buffer[i];
-	if(m->buffer[i] < min)
-	    min = m->buffer[i];
+        if(m->buffer[i].val > max)
+            max = m->buffer[i].val;
+	if(m->buffer[i].val < min)
+	    min = m->buffer[i].val;
     }
 
     int bucket_index;
     for(i = 0 ; i < m->buffer_index; i++) {
-        bucket_index = (int)(((m->buffer[i] - min)/(max - min))*num_buckets);
+        bucket_index = (int)(((m->buffer[i].val - min)/(max - min))*num_buckets);
         buckets[bucket_index]++;
     }
 
