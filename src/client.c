@@ -128,7 +128,36 @@ symbiomon_return_t symbiomon_metric_register_retrieval_callback(char *ns, func f
     return SYMBIOMON_SUCCESS;
 }
 
+symbiomon_return_t symbiomon_metric_dump_histogram(symbiomon_metric_t m, const char *filename, size_t num_buckets)
+{
+    double max = 0;
+    double min = 9999999999999;
+    int i = 0; 
+    size_t *buckets = (size_t*)calloc(num_buckets, sizeof(size_t));
+    for(i = 0 ; i < m->buffer_index; i++) {
+        if(m->buffer[i] > max)
+            max = m->buffer[i];
+	if(m->buffer[i] < min)
+	    min = m->buffer[i];
+    }
+
+    int bucket_index;
+    for(i = 0 ; i < m->buffer_index; i++) {
+        bucket_index = (int)(((m->buffer[i] - min)/(max - min))*num_buckets);
+        buckets[bucket_index]++;
+    }
+
+    FILE *fp = fopen(filename, "w");
+    fprintf(fp, "%lu, %lf, %lf\n", num_buckets, min, max);
+    for(i = 0; i < num_buckets; i++)
+        fprintf(fp, "%lu\n", buckets[i]);
+    fclose(fp);
+    free(buckets);
+
+}
+
 /* APIs for remote monitoring clients */
+
 symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, symbiomon_taglist_t taglist, symbiomon_metric_id_t* metric_id)
 {
     if(!ns || !name)
