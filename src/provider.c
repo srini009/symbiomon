@@ -134,10 +134,6 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     if(!ns || !name)
         return SYMBIOMON_ERR_INVALID_NAME;
 
-    /* check if metric exists, and if it does, return quickly */
-    if(m && find_metric(provider, &((*m)->id)))
-        return SYMBIOMON_SUCCESS;
-
     /* create an id for the new metric */
     symbiomon_metric_id_t id;
     symbiomon_id_from_string_identifiers(ns, name, tl->taglist, tl->num_tags, &id);
