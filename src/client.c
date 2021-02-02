@@ -132,6 +132,8 @@ symbiomon_return_t symbiomon_metric_dump_histogram(symbiomon_metric_t m, const c
 {
     double max = 0;
     double min = 9999999999999;
+
+    fprintf(stderr, "Invoked dump histogram\n");
     int i = 0; 
     size_t *buckets = (size_t*)calloc(num_buckets, sizeof(size_t));
     for(i = 0 ; i < m->buffer_index; i++) {
