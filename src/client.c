@@ -158,6 +158,15 @@ symbiomon_return_t symbiomon_metric_dump_histogram(symbiomon_metric_t m, const c
 
 }
 
+symbiomon_return_t symbiomon_metric_dump_raw_data(symbiomon_metric_t m, const char *filename)
+{
+
+    FILE *fp = fopen(filename, "w");
+    for(i = 0; i < m->buffer_index; i++)
+        fprintf(fp, "%lf\n", m->buffer[i].val);
+    fclose(fp);
+}
+
 /* APIs for remote monitoring clients */
 
 symbiomon_return_t symbiomon_remote_metric_get_id(char *ns, char *name, symbiomon_taglist_t taglist, symbiomon_metric_id_t* metric_id)

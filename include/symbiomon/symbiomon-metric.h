@@ -32,6 +32,7 @@ symbiomon_return_t symbiomon_metric_destroy(symbiomon_metric_t m, symbiomon_prov
 symbiomon_return_t symbiomon_metric_destroy_all(symbiomon_provider_t provider);
 symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val);
 symbiomon_return_t symbiomon_metric_dump_histogram(symbiomon_metric_t m, const char *filename, size_t num_buckets);
+symbiomon_return_t symbiomon_metric_dump_raw_data(symbiomon_metric_t m, const char *filename);
 symbiomon_return_t symbiomon_metric_class_register_retrieval_callback(char *ns, func f);
 
 /* APIs for remote clients to request for performance data */
