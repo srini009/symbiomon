@@ -21,6 +21,7 @@ typedef struct symbiomon_provider* symbiomon_provider_t;
 #define SYMBIOMON_PROVIDER_IGNORE ((symbiomon_provider_t*)NULL)
 
 struct symbiomon_provider_args {
+    uint8_t            push_finalize_callback;
     const char*        token;  // Security token
     const char*        config; // JSON configuration
     ABT_pool           pool;   // Pool used to run RPCs
@@ -29,6 +30,7 @@ struct symbiomon_provider_args {
 };
 
 #define SYMBIOMON_PROVIDER_ARGS_INIT { \
+    .push_finalize_callback = 1;\
     .token = NULL, \
     .config = NULL, \
     .pool = ABT_POOL_NULL, \

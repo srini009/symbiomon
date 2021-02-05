@@ -96,7 +96,8 @@ int symbiomon_provider_register(
 
     /* add backends available at compiler time (e.g. default/dummy backends) */
 
-    margo_provider_push_finalize_callback(mid, p, &symbiomon_finalize_provider, p);
+    if(a.push_finalize_callback)
+        margo_provider_push_finalize_callback(mid, p, &symbiomon_finalize_provider, p);
 
     if(provider)
         *provider = p;
