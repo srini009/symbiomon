@@ -30,7 +30,7 @@ struct symbiomon_provider_args {
 };
 
 #define SYMBIOMON_PROVIDER_ARGS_INIT { \
-    .push_finalize_callback = 1;\
+    .push_finalize_callback = 1,\
     .token = NULL, \
     .config = NULL, \
     .pool = ABT_POOL_NULL, \
