@@ -121,6 +121,11 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
     return SYMBIOMON_SUCCESS;
 }
 
+double symbiomon_metric_get_last_value(symbiomon_metric_t m)
+{
+    return m->buffer[m->buffer_index].val;
+}
+
 symbiomon_return_t symbiomon_metric_register_retrieval_callback(char *ns, func f)
 {
     fprintf(stderr, "Callback function for namespace: %s is not yet implmented\n", ns);
