@@ -123,7 +123,11 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
 
 double symbiomon_metric_get_last_value(symbiomon_metric_t m)
 {
-    return m->buffer[m->buffer_index].val;
+    if(m->buffer_index) {
+        return m->buffer[m->buffer_index - 1].val;
+    } else {
+        return 0.0;
+    }
 }
 
 symbiomon_return_t symbiomon_metric_register_retrieval_callback(char *ns, func f)
