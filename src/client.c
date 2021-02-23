@@ -133,7 +133,7 @@ symbiomon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metri
     if(m->buffer_index) {
         m->buffer[m->buffer_index].val = m->buffer[m->buffer_index - 1].val + diff;
     } else {
-        return m->buffer[m->buffer_index].val = diff;
+        m->buffer[m->buffer_index].val = diff;
     }
 
     m->buffer[m->buffer_index].time = ABT_get_wtime();
