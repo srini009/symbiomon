@@ -121,7 +121,7 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
     return SYMBIOMON_SUCCESS;
 }
 
-symbimon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metric_t m, double diff)
+symbiomon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metric_t m, double diff)
 {
     switch(m->type) {
         case SYMBIOMON_TYPE_COUNTER:
