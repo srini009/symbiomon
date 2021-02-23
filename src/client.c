@@ -121,15 +121,27 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
     return SYMBIOMON_SUCCESS;
 }
 
-double symbiomon_metric_get_last_value(symbiomon_metric_t m)
+symbimon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metric_t m, double diff)
 {
+    switch(m->type) {
+        case SYMBIOMON_TYPE_COUNTER:
+        case SYMBIOMON_TYPE_TIMER:
+             return SYMBIOMON_ERR_INVALID_VALUE;
+    }
+
     ABT_mutex_lock(m->metric_mutex);
     if(m->buffer_index) {
-        return m->buffer[m->buffer_index - 1].val;
+        m->buffer[m->buffer_index].val = m->buffer[m->buffer_index - 1].val + diff;
     } else {
-        return 0.0;
+        return m->buffer[m->buffer_index].val = diff;
     }
+
+    m->buffer[m->buffer_index].time = ABT_get_wtime();
+    m->buffer_index++;
+
     ABT_mutex_unlock(m->metric_mutex);
+
+    return SYMBIOMON_SUCCESS;
 }
 
 symbiomon_return_t symbiomon_metric_register_retrieval_callback(char *ns, func f)
