@@ -187,7 +187,7 @@ symbiomon_return_t symbiomon_metric_dump_raw_data(symbiomon_metric_t m, const ch
     FILE *fp = fopen(filename, "w");
     int i;
     for(i = 0; i < m->buffer_index; i++)
-        fprintf(fp, "%.9lf\n", m->buffer[i].val);
+        fprintf(fp, "%.9lf, %.9lf\n", m->buffer[i].val, m->buffer[i].time);
     fclose(fp);
 }
 
