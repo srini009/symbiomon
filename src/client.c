@@ -111,9 +111,9 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
     }
 
     ABT_unit_id self_id;
-    ABT_thread_self_id(&self_id);
   
     ABT_mutex_lock(m->metric_mutex);
+    ABT_self_get_thread_id(&self_id);
         
     m->buffer[m->buffer_index].val = val;
     m->buffer[m->buffer_index].time = ABT_get_wtime();
@@ -134,13 +134,13 @@ symbiomon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metri
     }
 
     ABT_unit_id self_id;
-    ABT_thread_self_id(&self_id);
 
     ABT_mutex_lock(m->metric_mutex);
+    ABT_self_get_thread_id(&self_id);
     if(m->buffer_index) {
         m->buffer[m->buffer_index].val = m->buffer[m->buffer_index - 1].val + diff;
     } else {
-        m->buffer[m->buffer_index].val = diff;
+        m->buffer[m->buffer_index].val = 1;
     }
 
     m->buffer[m->buffer_index].time = ABT_get_wtime();
