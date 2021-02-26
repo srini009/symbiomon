@@ -50,6 +50,7 @@ typedef enum symbiomon_metric_type {
 typedef struct symbiomon_metric_sample {
    double time;
    double val;
+   uint64_t sample_id;
 } symbiomon_metric_sample;
 
 typedef symbiomon_metric_sample* symbiomon_metric_buffer;

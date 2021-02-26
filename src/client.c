@@ -109,11 +109,15 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
         case SYMBIOMON_TYPE_GAUGE:
           break;
     }
+
+    ABT_unit_id self_id;
+    ABT_self_get_thread_id(&self_id);
   
     ABT_mutex_lock(m->metric_mutex);
         
     m->buffer[m->buffer_index].val = val;
     m->buffer[m->buffer_index].time = ABT_get_wtime();
+    m->buffer[m->buffer_index].sample_id = self_id;
     m->buffer_index++;
 
     ABT_mutex_unlock(m->metric_mutex);
@@ -129,6 +133,9 @@ symbiomon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metri
              return SYMBIOMON_ERR_INVALID_VALUE;
     }
 
+    ABT_unit_id self_id;
+    ABT_self_get_thread_id(&self_id);
+
     ABT_mutex_lock(m->metric_mutex);
     if(m->buffer_index) {
         m->buffer[m->buffer_index].val = m->buffer[m->buffer_index - 1].val + diff;
@@ -138,6 +145,7 @@ symbiomon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metri
 
     m->buffer[m->buffer_index].time = ABT_get_wtime();
     m->buffer_index++;
+    m->buffer[m->buffer_index].sample_id = self_id;
 
     ABT_mutex_unlock(m->metric_mutex);
 
