@@ -111,7 +111,7 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
     }
 
     ABT_unit_id self_id;
-    ABT_self_get_thread_id(&self_id);
+    ABT_thread_self_id(&self_id);
   
     ABT_mutex_lock(m->metric_mutex);
         
@@ -134,7 +134,7 @@ symbiomon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metri
     }
 
     ABT_unit_id self_id;
-    ABT_self_get_thread_id(&self_id);
+    ABT_thread_self_id(&self_id);
 
     ABT_mutex_lock(m->metric_mutex);
     if(m->buffer_index) {
