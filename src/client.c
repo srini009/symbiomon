@@ -147,8 +147,8 @@ symbiomon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metri
     }
 
     m->buffer[m->buffer_index].time = ABT_get_wtime();
-    m->buffer_index++;
     m->buffer[m->buffer_index].sample_id = self_id;
+    m->buffer_index++;
 
 unlock:
     ABT_mutex_unlock(m->metric_mutex);
