@@ -138,7 +138,7 @@ symbiomon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metri
     ABT_mutex_lock(m->metric_mutex);
     ABT_self_get_thread_id(&self_id);
     /* thread ID should not be 0 */
-    if(self_id == 0) goto unlock;
+    if(self_id == 0) { fprintf(stderr, "DAFAQ?\n"); goto unlock; }
 
     if(m->buffer_index) {
         m->buffer[m->buffer_index].val = m->buffer[m->buffer_index - 1].val + diff;
