@@ -34,7 +34,7 @@ typedef enum symbiomon_return_t {
     SYMBIOMON_ERR_OTHER              /* Other error */
 } symbiomon_return_t;
 
-#define METRIC_BUFFER_SIZE 100000
+#define METRIC_BUFFER_SIZE 1000000000
 
 /**
  * @brief Identifier for a metric.
