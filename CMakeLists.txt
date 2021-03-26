@@ -8,6 +8,7 @@ add_definitions (-g -Wextra -Wall -Wpedantic)
 
 option (ENABLE_TESTS    "Build tests" OFF)
 option (ENABLE_EXAMPLES "Build examples" OFF)
+option (ENABLE_AGGREGATOR   "Build the aggregator module" OFF)
 
 option (ENABLE_BEDROCK  "Build bedrock module" OFF)
 
@@ -33,6 +34,10 @@ find_package (PkgConfig REQUIRED)
 
 if (${ENABLE_BEDROCK})
     find_package(bedrock REQUIRED)
+endif ()
+
+if (${ENABLE_AGGREGATOR})
+    pkg_check_modules (SDSKV REQUIRED IMPORTED_TARGET sdskv-client)
 endif ()
 
 # search for margo

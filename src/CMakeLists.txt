@@ -23,6 +23,10 @@ set (symbiomon-pkg "share/cmake/symbiomon")
 # set version fo shared library
 set (symbiomon-vers "${SYMBIOMON_VERSION_MAJOR}.${SYMBIOMON_VERSION_MINOR}")
 
+if(${ENABLE_AGGREGATOR})
+  add_definitions("-DUSE_AGGREGATOR")
+endif(${ENABLE_AGGREGATOR})
+
 # server library
 add_library (symbiomon-server ${server-src-files} ${dummy-src-files})
 target_link_libraries (symbiomon-server
@@ -50,6 +54,11 @@ target_include_directories (symbiomon-client BEFORE PUBLIC
 set_target_properties (symbiomon-client
     PROPERTIES VERSION ${SYMBIOMON_VERSION}
     SOVERSION ${SYMBIOMON_VERSION_MAJOR})
+
+if(${ENABLE_AGGREGATOR})
+  target_include_directories (symbiomon-server PUBLIC ${SDSKV_INCLUDE_DIR})
+  target_link_libraries (symbiomon-server PkgConfig::SDSKV)
+endif(${ENABLE_AGGREGATOR})
 
 # admin library
 add_library (symbiomon-admin ${admin-src-files})
