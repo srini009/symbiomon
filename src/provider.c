@@ -114,12 +114,11 @@ int symbiomon_provider_register(
         sdskv_client_init(mid, &p->aggcl);
         sdskv_provider_handle_t *aggphs = (sdskv_provider_handle_t *)malloc(sizeof(sdskv_provider_handle_t)*num_aggregators);
         while(fscanf(fp_agg, "%s %u\n", svr_addr_str, &p_id) != EOF) {
+	  sdskv_provider_handle_create(p->aggcl, );
           hg_addr_t svr_addr; 
           int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
           assert(hret == HG_SUCCESS);
-          aggphs[i] = calloc(1, sizeof(*aggphs[i])); 
-          margo_addr_dup(mid, svr_addr, &(aggphs[i]->addr));
-          aggphs[i]->provider_id = p_id; 
+	  sdskv_provider_handle_create(p->aggcl, svr_addr, p_id, &(aggphs[i]));
           i++;
         }
         p->use_aggregator = 1;
