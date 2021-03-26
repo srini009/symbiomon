@@ -10,6 +10,9 @@
 #include <abt-io.h>
 #include "uthash.h"
 #include "types.h"
+#ifdef USE_AGGREGATOR
+#include <sdskv-client.h>
+#endif
 
 typedef struct symbiomon_provider {
     /* Margo/Argobots/Mercury environment */
@@ -24,6 +27,11 @@ typedef struct symbiomon_provider {
     hg_id_t list_metrics_id;
     hg_id_t metric_fetch_id;
     /* ... add other RPC identifiers here ... */
+    uint8_t use_aggregator;
+#ifdef USE_AGGREGATOR
+    sdskv_client_t aggcl;
+    sdskv_provider_handle_t aggphs;
+#endif
 } symbiomon_provider;
 
 symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider);

@@ -9,6 +9,9 @@
 #include "symbiomon/symbiomon-backend.h"
 #include "provider.h"
 #include "types.h"
+#ifdef USE_AGGREGATOR
+#include <sdskv-client.h>
+#endif
 
 static void symbiomon_finalize_provider(void* p);
 
@@ -90,11 +93,42 @@ int symbiomon_provider_register(
             symbiomon_list_metrics_ult, provider_id, p->pool);
     margo_register_data(mid, id, (void*)p, NULL);
     p->list_metrics_id = id;
+    p->use_aggregator = 0;
 
     /* add other RPC registration here */
     /* ... */
 
     /* add backends available at compiler time (e.g. default/dummy backends) */
+
+#ifdef USE_AGGREGATOR
+    #define MAXCHAR 100
+    FILE *fp_agg = NULL;
+    char * aggregator_addr_file = getenv("AGGREGATOR_ADDRESS_FILE");
+    if(aggregator_addr_file) {
+        char svr_addr_str[MAXCHAR];
+        uint16_t p_id;
+        fp_agg = fopen(aggregator_addr_file, "r");
+        int32_t num_aggregators;
+        int i = 0;
+        fscanf(fp_agg, "%d\n", num_aggregators);
+        sdskv_client_init(mid, &p->aggcl);
+        sdskv_provider_handle_t *aggphs = (sdskv_provider_handle_t *)malloc(sizeof(sdskv_provider_handle_t)*num_aggregators);
+        while(fscanf(fp_agg, "%s %u\n", svr_addr_str, &p_id) != EOF) {
+          hg_addr_t svr_addr; 
+          int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
+          assert(hret == HG_SUCCESS);
+          aggphs[i] = calloc(1, sizeof(*aggphs[i])); 
+          margo_addr_dup(mid, svr_addr, &(aggphs[i]->addr));
+          aggphs[i]->provider_id = p_id; 
+          i++;
+        }
+        p->use_aggregator = 1;
+        p->aggphs = aggphs;
+	fprintf(stderr, "Successfully setup aggregator support.\n");
+    } else {
+        fprintf(stderr, "AGGREGATOR_ADDRESS_FILE is not set. Continuing on without aggregator support");
+    }
+#endif
 
     if(a.push_finalize_callback)
         margo_provider_push_finalize_callback(mid, p, &symbiomon_finalize_provider, p);
