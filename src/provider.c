@@ -315,7 +315,7 @@ symbiomon_return_t symbiomon_provider_aggregate_all_metrics(symbiomon_provider_t
 {
     symbiomon_metric *r, *tmp;
     HASH_ITER(hh, provider->metrics, r, tmp) {
-	symbiomon_provider_metric_aggregate(*r, provider);
+	symbiomon_provider_metric_aggregate(r, provider);
         free(r);
     }
 
