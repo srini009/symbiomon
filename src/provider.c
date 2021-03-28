@@ -185,7 +185,6 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     metric->buffer = (symbiomon_metric_buffer)calloc(METRIC_BUFFER_SIZE, sizeof(symbiomon_metric_sample));
     add_metric(provider, metric);
 
-    fprintf(stderr, "\nCreated metric %d of type %lu\n", id, metric->type);
     fprintf(stderr, "Num metrics is: %lu\n", provider->num_metrics);
 
     *m = metric;
@@ -328,6 +327,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
                 sum += m->buffer[current_index].val; 
             }
 	    avg = sum/(double)current_index;
+	    fprintf(stderr, "Avg is: %lf\n", avg);
 	    break;
         }
 	case SYMBIOMON_AGG_OP_MIN: {
