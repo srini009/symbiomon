@@ -39,4 +39,9 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
 symbiomon_return_t symbiomon_provider_metric_destroy(symbiomon_metric_t m, symbiomon_provider_t provider);
 
 symbiomon_return_t symbiomon_provider_destroy_all_metrics(symbiomon_provider_t provider);
+
+symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, symbiomon_provider_t provider);
+
+symbiomon_return_t symbiomon_provider_aggregate_all_metrics(symbiomon_metric_t m, symbiomon_provider_t provider);
+
 #endif
