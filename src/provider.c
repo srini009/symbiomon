@@ -317,14 +317,14 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
         }
 	case SYMBIOMON_AGG_OP_SUM: {
 	    int i=0;
-	    for(i=0; i < current_index; i < ++) {
+	    for(i=0; i < current_index; i++) {
                 sum += m->buffer[current_index].val; 
             }
 	    break;
         }
 	case SYMBIOMON_AGG_OP_AVG: {
 	    int i=0;
-	    for(i=0; i < current_index; i < ++) {
+	    for(i=0; i < current_index; i++) {
                 sum += m->buffer[current_index].val; 
             }
 	    avg = sum/(double)current_index;
@@ -332,20 +332,19 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
         }
 	case SYMBIOMON_AGG_OP_MIN: {
 	    int i=0;
-	    for(i=0; i < current_index; i < ++) {
+	    for(i=0; i < current_index; i++) {
                 min = (m->buffer[current_index].val < min ? m->buffer[current_index].val:min);
             }
 	    break;
         }
 	case SYMBIOMON_AGG_OP_MAX: {
 	    int i=0;
-	    for(i=0; i < current_index; i < ++) {
+	    for(i=0; i < current_index; i++) {
                 max = (m->buffer[current_index].val > max ? m->buffer[current_index].val:max);
             }
 	    break;
         }
 	case SYMBIOMON_AGG_OP_STORE: {
-	    int i=0;
 	    symbiomon_metric_buffer buf = (symbiomon_metric_buffer)malloc(current_index*sizeof(symbiomon_metric_sample));
 	    memcpy(buf, m->buffer, current_index*sizeof(symbiomon_metric_sample));
 	    break;
