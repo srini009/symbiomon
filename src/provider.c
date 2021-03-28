@@ -347,6 +347,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	case SYMBIOMON_AGG_OP_STORE: {
 	    symbiomon_metric_buffer buf = (symbiomon_metric_buffer)malloc(current_index*sizeof(symbiomon_metric_sample));
 	    memcpy(buf, m->buffer, current_index*sizeof(symbiomon_metric_sample));
+	    fprintf(stderr, "Storing: %d samples\n", current_index);
 	    break;
         }
 
