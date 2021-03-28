@@ -80,9 +80,9 @@ symbiomon_return_t symbiomon_taglist_destroy(symbiomon_taglist_t taglist)
 
 }
 
-symbiomon_return_t symbiomon_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* m, symbiomon_provider_t p)
+symbiomon_return_t symbiomon_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* m, symbiomon_provider_t p, symbiomon_metric_agg_op_t agg)
 {
-    return symbiomon_provider_metric_create(ns, name, t, desc, taglist, m, p);
+    return symbiomon_provider_metric_create(ns, name, t, desc, taglist, m, p, agg);
 }
 
 symbiomon_return_t symbiomon_metric_destroy(symbiomon_metric_t m, symbiomon_provider_t p)
@@ -93,6 +93,16 @@ symbiomon_return_t symbiomon_metric_destroy(symbiomon_metric_t m, symbiomon_prov
 symbiomon_return_t symbiomon_metric_destroy_all(symbiomon_provider_t p)
 {
     return symbiomon_provider_destroy_all_metrics(p);
+}
+
+symbiomon_return_t symbiomon_metric_aggregate(symbiomon_metric_t m, symbiomon_provider_t p)
+{
+    return symbiomon_provider_metric_aggregate(m, p);
+}
+
+symbiomon_return_t symbiomon_metric_aggregate_all(symbiomon_provider_t p)
+{
+    return symbiomon_provider_aggregate_all_metrics(p);
 }
 
 symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)

@@ -27,9 +27,11 @@ typedef void (*func)();
 /* APIs for providers to record performance data */
 symbiomon_return_t symbiomon_taglist_create(symbiomon_taglist_t *taglist, int num_tags, ...);
 symbiomon_return_t symbiomon_taglist_destroy(symbiomon_taglist_t taglist);
-symbiomon_return_t symbiomon_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* metric_handle, symbiomon_provider_t provider);
+symbiomon_return_t symbiomon_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* metric_handle, symbiomon_provider_t provider, symbiomon_metric_agg_op_t agg);
 symbiomon_return_t symbiomon_metric_destroy(symbiomon_metric_t m, symbiomon_provider_t provider);
 symbiomon_return_t symbiomon_metric_destroy_all(symbiomon_provider_t provider);
+symbiomon_return_t symbiomon_metric_aggregate(symbiomon_metric_t m, symbiomon_provider_t provider);
+symbiomon_return_t symbiomon_metric_aggregate_all(symbiomon_provider_t provider);
 symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val);
 symbiomon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metric_t m, double diff);
 symbiomon_return_t symbiomon_metric_dump_histogram(symbiomon_metric_t m, const char *filename, size_t num_buckets);

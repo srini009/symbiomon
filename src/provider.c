@@ -162,7 +162,7 @@ int symbiomon_provider_destroy(
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider, symbiomon_metric_agg_op_t agg)
 {
     if(!ns || !name)
         return SYMBIOMON_ERR_INVALID_NAME;
@@ -181,6 +181,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     metric->type = t;
     metric->taglist = tl;
     metric->buffer_index = 0;
+    metric->agg_op = agg;
     metric->buffer = (symbiomon_metric_buffer)calloc(METRIC_BUFFER_SIZE, sizeof(symbiomon_metric_sample));
     add_metric(provider, metric);
 
@@ -289,6 +290,34 @@ symbiomon_return_t symbiomon_provider_destroy_all_metrics(symbiomon_provider_t p
 {
 
     remove_all_metrics(provider);
+
+    return SYMBIOMON_SUCCESS;
+}
+
+symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, symbiomon_provider_t provider)
+{
+
+#ifdef USE_AGGREGATOR
+    /* find the metric */
+    symbiomon_metric* metric = find_metric(provider, &m->id);
+    if(!metric) {
+        return SYMBIOMON_ERR_INVALID_METRIC;
+    }
+
+    switch(metric->agg_op) {
+
+    }
+#endif
+    return SYMBIOMON_SUCCESS;
+}
+
+symbiomon_return_t symbiomon_provider_aggregate_all_metrics(symbiomon_provider_t provider)
+{
+    symbiomon_metric *r, *tmp;
+    HASH_ITER(hh, provider->metrics, r, tmp) {
+	symbiomon_provider_metric_aggregate(*r, provider);
+        free(r);
+    }
 
     return SYMBIOMON_SUCCESS;
 }
