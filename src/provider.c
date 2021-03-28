@@ -110,7 +110,7 @@ int symbiomon_provider_register(
         fp_agg = fopen(aggregator_addr_file, "r");
         int32_t num_aggregators;
         int i = 0;
-        fscanf(fp_agg, "%d\n", num_aggregators);
+        fscanf(fp_agg, "%d\n", &num_aggregators);
         sdskv_client_init(mid, &p->aggcl);
         sdskv_provider_handle_t *aggphs = (sdskv_provider_handle_t *)malloc(sizeof(sdskv_provider_handle_t)*num_aggregators);
         while(fscanf(fp_agg, "%s %u\n", svr_addr_str, &p_id) != EOF) {
