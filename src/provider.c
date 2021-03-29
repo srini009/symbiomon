@@ -363,7 +363,7 @@ symbiomon_return_t symbiomon_provider_aggregate_all_metrics(symbiomon_provider_t
     HASH_ITER(hh, provider->metrics, r, tmp) {
 	ret = symbiomon_provider_metric_aggregate(r, provider);
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
-        free(r);
+        //free(r);
     }
 
     return SYMBIOMON_SUCCESS;
