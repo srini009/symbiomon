@@ -173,7 +173,6 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
 
     symbiomon_metric* existing = find_metric(provider, &(id));
     if(existing) {
-	fprintf(stderr, "metric exists bro..\n");
         return SYMBIOMON_ERR_METRIC_EXISTS;
     }
 
@@ -332,7 +331,6 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
                 sum += m->buffer[current_index].val; 
             }
 	    avg = sum/(double)current_index;
-	    fprintf(stderr, "Avg is: %lf\n", avg);
 	    break;
         }
 	case SYMBIOMON_AGG_OP_MIN: {
@@ -352,7 +350,6 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	case SYMBIOMON_AGG_OP_STORE: {
 	    symbiomon_metric_buffer buf = (symbiomon_metric_buffer)malloc(current_index*sizeof(symbiomon_metric_sample));
 	    memcpy(buf, m->buffer, current_index*sizeof(symbiomon_metric_sample));
-	    fprintf(stderr, "Storing: %d samples\n", current_index);
 	    break;
         }
 
@@ -368,7 +365,6 @@ symbiomon_return_t symbiomon_provider_aggregate_all_metrics(symbiomon_provider_t
     HASH_ITER(hh, provider->metrics, r, tmp) {
 	ret = symbiomon_provider_metric_aggregate(r, provider);
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
-        //free(r);
     }
 
     return SYMBIOMON_SUCCESS;
