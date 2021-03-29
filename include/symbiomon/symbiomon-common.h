@@ -22,6 +22,7 @@ typedef enum symbiomon_return_t {
     SYMBIOMON_ERR_INVALID_ARGS,      /* Invalid argument */
     SYMBIOMON_ERR_INVALID_PROVIDER,  /* Invalid provider id */
     SYMBIOMON_ERR_INVALID_METRIC,    /* Invalid metric id */
+    SYMBIOMON_ERR_METRIC_EXISTS,     /* Metric exists */
     SYMBIOMON_ERR_INVALID_VALUE,     /* Invalid metric update value */
     SYMBIOMON_ERR_INVALID_BACKEND,   /* Invalid backend type */
     SYMBIOMON_ERR_INVALID_CONFIG,    /* Invalid configuration */

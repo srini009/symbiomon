@@ -171,6 +171,12 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     symbiomon_metric_id_t id;
     symbiomon_id_from_string_identifiers(ns, name, tl->taglist, tl->num_tags, &id);
 
+    symbiomon_metric* existing = find_metric(provider, &(id));
+    if(existing) {
+	fprintf(stderr, "metric exists bro..\n");
+        return SYMBIOMON_ERR_METRIC_EXISTS;
+    }
+
     /* allocate a metric, set it up, and add it to the provider */
     symbiomon_metric* metric = (symbiomon_metric*)calloc(1, sizeof(*metric));
     ABT_mutex_create(&metric->metric_mutex);
@@ -434,7 +440,6 @@ static inline symbiomon_return_t add_metric(
 
     symbiomon_metric* existing = find_metric(provider, &(metric->id));
     if(existing) {
-	fprintf(stderr, "metric exists..\n");
         return SYMBIOMON_ERR_INVALID_METRIC;
     }
     HASH_ADD(hh, provider->metrics, id, sizeof(symbiomon_metric_id_t), metric);
