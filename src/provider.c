@@ -185,8 +185,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     metric->buffer = (symbiomon_metric_buffer)calloc(METRIC_BUFFER_SIZE, sizeof(symbiomon_metric_sample));
     add_metric(provider, metric);
 
-    fprintf(stderr, "Num metrics is: %lu\n", provider->num_metrics);
-
+    fprintf(stderr, "Created metric with name and ns: %s and %s\n", name, ns);
     *m = metric;
 
     return SYMBIOMON_SUCCESS;
