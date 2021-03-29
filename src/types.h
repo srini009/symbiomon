@@ -80,8 +80,8 @@ typedef struct symbiomon_metric {
     symbiomon_metric_buffer buffer;
     unsigned int buffer_index;
     char desc[200];
-    char name[36];
-    char ns[36];
+    char name[128];
+    char ns[128];
     symbiomon_taglist_t taglist;
     symbiomon_metric_id_t id;
     UT_hash_handle      hh;
