@@ -434,6 +434,7 @@ static inline symbiomon_return_t add_metric(
 
     symbiomon_metric* existing = find_metric(provider, &(metric->id));
     if(existing) {
+	fprintf(stderr, "metric exists..\n");
         return SYMBIOMON_ERR_INVALID_METRIC;
     }
     HASH_ADD(hh, provider->metrics, id, sizeof(symbiomon_metric_id_t), metric);
