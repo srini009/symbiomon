@@ -120,6 +120,7 @@ int symbiomon_provider_register(
 	  sdskv_provider_handle_create(p->aggcl, svr_addr, p_id, &(aggphs[i]));
           i++;
         }
+	p->num_aggregators = num_aggregators;
         p->use_aggregator = 1;
         p->aggphs = aggphs;
 	fprintf(stderr, "Successfully setup aggregator support.\n");
@@ -331,6 +332,13 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
                 sum += m->buffer[current_index].val; 
             }
 	    avg = sum/(double)current_index;
+	    /*char *key = (char *)malloc(128*sizeof(char));
+	    strcat(key, m->ns);
+	    strcat(key, "_");
+	    strcat(key, m->name);
+	    strcat(key, "_");
+	    strcat(key, "_AVG");
+	    sdskv_put();*/
 	    break;
         }
 	case SYMBIOMON_AGG_OP_MIN: {
