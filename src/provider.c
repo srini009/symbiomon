@@ -317,6 +317,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
     if (current_index == 0) return SYMBIOMON_SUCCESS;
 
     uint32_t agg_id = (uint32_t)(m->id)%(provider->num_aggregators);
+    int ret;
 
     double min=9999999999.0;
     double max=-9999999999.0;
@@ -339,13 +340,14 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
                 sum += m->buffer[current_index].val; 
             }
 	    avg = sum/(double)current_index;
-	    /*char *key = (char *)malloc(128*sizeof(char));
+	    char *key = (char *)malloc(128*sizeof(char));
 	    strcat(key, m->ns);
 	    strcat(key, "_");
 	    strcat(key, m->name);
 	    strcat(key, "_");
 	    strcat(key, "_AVG");
-	    sdskv_put();*/
+	    ret = sdskv_put(provider->aggph[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &avg, sizeof(double));
+	    if(ret = SDSKV_SUCCESS) { fprintf(stderr, "Key-Value pair successfully written\n"); }
 	    break;
         }
 	case SYMBIOMON_AGG_OP_MIN: {
