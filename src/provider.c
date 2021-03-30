@@ -104,25 +104,30 @@ int symbiomon_provider_register(
     #define MAXCHAR 100
     FILE *fp_agg = NULL;
     char * aggregator_addr_file = getenv("AGGREGATOR_ADDRESS_FILE");
+    char db_name[128];
     if(aggregator_addr_file) {
         char svr_addr_str[MAXCHAR];
         uint16_t p_id;
         fp_agg = fopen(aggregator_addr_file, "r");
         int32_t num_aggregators;
+        sdskv_database_id_t db_id;
         int i = 0;
         fscanf(fp_agg, "%d\n", &num_aggregators);
         sdskv_client_init(mid, &p->aggcl);
         sdskv_provider_handle_t *aggphs = (sdskv_provider_handle_t *)malloc(sizeof(sdskv_provider_handle_t)*num_aggregators);
-        while(fscanf(fp_agg, "%s %u\n", svr_addr_str, &p_id) != EOF) {
+        sdskv_database_id_t *aggdbids = (sdskv_database_id_t *)malloc(sizeof(sdskv_database_id_t)*num_aggregators);
+        while(fscanf(fp_agg, "%s %u %s\n", svr_addr_str, &p_id, db_name) != EOF) {
           hg_addr_t svr_addr; 
           int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
           assert(hret == HG_SUCCESS);
 	  sdskv_provider_handle_create(p->aggcl, svr_addr, p_id, &(aggphs[i]));
+	  sdskv_open(aggphs[i], db_name, &aggdbids[db_id]); 
           i++;
         }
 	p->num_aggregators = num_aggregators;
         p->use_aggregator = 1;
         p->aggphs = aggphs;
+        p->aggdbids = aggdbids;
 	fprintf(stderr, "Successfully setup aggregator support.\n");
     } else {
         fprintf(stderr, "AGGREGATOR_ADDRESS_FILE is not set. Continuing on without aggregator support");
@@ -311,6 +316,8 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
     unsigned int current_index = m->buffer_index;
     if (current_index == 0) return SYMBIOMON_SUCCESS;
 
+    uint32_t agg_id = (uint32_t)(m->id)%(p->num_aggregators);
+
     double min=9999999999.0;
     double max=-9999999999.0;
     double avg=0.0;
@@ -332,6 +339,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
                 sum += m->buffer[current_index].val; 
             }
 	    avg = sum/(double)current_index;
+	    uint32_t agg_id = (uint32_t)(m->id)%(p->num_aggregators);
 	    /*char *key = (char *)malloc(128*sizeof(char));
 	    strcat(key, m->ns);
 	    strcat(key, "_");

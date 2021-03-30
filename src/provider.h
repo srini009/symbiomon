@@ -32,6 +32,7 @@ typedef struct symbiomon_provider {
 #ifdef USE_AGGREGATOR
     sdskv_client_t aggcl;
     sdskv_provider_handle_t aggphs;
+    sdskv_database_id_t * aggdbids;
 #endif
 } symbiomon_provider;
 
