@@ -114,6 +114,7 @@ int symbiomon_provider_register(
         int i = 0;
 	fprintf(stderr, "Aggregator file is: %s\n", aggregator_addr_file);
         fscanf(fp_agg, "%d\n", &num_aggregators);
+	fprintf(stderr, "Num aggregators: %d\n", num_aggregators);
         sdskv_client_init(mid, &p->aggcl);
         sdskv_provider_handle_t *aggphs = (sdskv_provider_handle_t *)malloc(sizeof(sdskv_provider_handle_t)*num_aggregators);
         sdskv_database_id_t *aggdbids = (sdskv_database_id_t *)malloc(sizeof(sdskv_database_id_t)*num_aggregators);
