@@ -105,11 +105,11 @@ int symbiomon_provider_register(
     FILE *fp_agg = NULL;
     char * aggregator_addr_file = getenv("AGGREGATOR_ADDRESS_FILE");
     char db_name[128];
+    uint32_t num_aggregators;
     if(aggregator_addr_file) {
         char svr_addr_str[MAXCHAR];
         uint16_t p_id;
         fp_agg = fopen(aggregator_addr_file, "r");
-        uint32_t num_aggregators;
         sdskv_database_id_t db_id;
         int i = 0;
 	fprintf(stderr, "Aggregator file is: %s\n", aggregator_addr_file);
