@@ -128,7 +128,7 @@ int symbiomon_provider_register(
         p->use_aggregator = 1;
         p->aggphs = aggphs;
         p->aggdbids = aggdbids;
-	fprintf(stderr, "Successfully setup aggregator support.\n");
+	fprintf(stderr, "Successfully setup aggregator support with num_aggregators: %d \n", p->num_aggregators);
     } else {
         fprintf(stderr, "AGGREGATOR_ADDRESS_FILE is not set. Continuing on without aggregator support");
     }
