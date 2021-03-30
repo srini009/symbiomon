@@ -347,7 +347,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    strcat(key, "_");
 	    strcat(key, "_AVG");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &avg, sizeof(double));
-	    if(ret = SDSKV_SUCCESS) { fprintf(stderr, "Key-Value pair successfully written\n"); }
+	    if(ret == SDSKV_SUCCESS) { fprintf(stderr, "Key-Value pair successfully written\n"); }
 	    break;
         }
 	case SYMBIOMON_AGG_OP_MIN: {
