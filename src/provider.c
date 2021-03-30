@@ -371,7 +371,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    strcat(key, m->name);
 	    symbiomon_metric_buffer buf = (symbiomon_metric_buffer)malloc(current_index*sizeof(symbiomon_metric_sample));
 	    memcpy(buf, m->buffer, current_index*sizeof(symbiomon_metric_sample));
-	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)buf, sizeof(current_index*sizeof(symbiomon_metric_sample)))
+	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)buf, sizeof(current_index*sizeof(symbiomon_metric_sample)));
 	    if(ret == SDSKV_SUCCESS) { fprintf(stderr, "Key-Value pair successfully written\n"); }
 	    break;
         }
