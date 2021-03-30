@@ -118,6 +118,7 @@ int symbiomon_provider_register(
         sdskv_database_id_t *aggdbids = (sdskv_database_id_t *)malloc(sizeof(sdskv_database_id_t)*num_aggregators);
         while(fscanf(fp_agg, "%s %u %s\n", svr_addr_str, &p_id, db_name) != EOF) {
           hg_addr_t svr_addr; 
+	  fprintf(stderr, "SERVER and PROVIDER ID: %s, %u\n", svr_addr_str, p_id);
           int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
           assert(hret == HG_SUCCESS);
 	  sdskv_provider_handle_create(p->aggcl, svr_addr, p_id, &(aggphs[i]));
