@@ -105,7 +105,6 @@ int symbiomon_provider_register(
     FILE *fp_agg = NULL;
     char * aggregator_addr_file = getenv("AGGREGATOR_ADDRESS_FILE");
     char db_name[128];
-    uint32_t num_aggregators;
     if(aggregator_addr_file) {
         char svr_addr_str[MAXCHAR];
         uint16_t p_id;
@@ -113,11 +112,11 @@ int symbiomon_provider_register(
         sdskv_database_id_t db_id;
         int i = 0;
 	fprintf(stderr, "Aggregator file is: %s\n", aggregator_addr_file);
-        fscanf(fp_agg, "%d\n", &num_aggregators);
-	fprintf(stderr, "Num aggregators before: %d\n", num_aggregators);
+        fscanf(fp_agg, "%d\n", &(p->num_aggregators));
+	fprintf(stderr, "Num aggregators before: %d\n", p->num_aggregators);
         sdskv_client_init(mid, &p->aggcl);
-        sdskv_provider_handle_t *aggphs = (sdskv_provider_handle_t *)malloc(sizeof(sdskv_provider_handle_t)*num_aggregators);
-        sdskv_database_id_t *aggdbids = (sdskv_database_id_t *)malloc(sizeof(sdskv_database_id_t)*num_aggregators);
+        sdskv_provider_handle_t *aggphs = (sdskv_provider_handle_t *)malloc(sizeof(sdskv_provider_handle_t)*p->num_aggregators);
+        sdskv_database_id_t *aggdbids = (sdskv_database_id_t *)malloc(sizeof(sdskv_database_id_t)*p->num_aggregators);
         while(fscanf(fp_agg, "%s %u %s\n", svr_addr_str, &p_id, db_name) != EOF) {
           hg_addr_t svr_addr; 
 	  fprintf(stderr, "SERVER and PROVIDER ID: %s, %u\n", svr_addr_str, p_id);
@@ -129,8 +128,7 @@ int symbiomon_provider_register(
 	  assert(hret == SDSKV_SUCCESS);
           i++;
         }
-	fprintf(stderr, "Num aggregators after: %d\n", num_aggregators);
-	p->num_aggregators = num_aggregators;
+	fprintf(stderr, "Num aggregators after: %d\n", p->num_aggregators);
         p->use_aggregator = 1;
         p->aggphs = aggphs;
         p->aggdbids = aggdbids;
