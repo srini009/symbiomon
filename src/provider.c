@@ -339,7 +339,6 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
                 sum += m->buffer[current_index].val; 
             }
 	    avg = sum/(double)current_index;
-	    uint32_t agg_id = (uint32_t)(m->id)%(p->num_aggregators);
 	    /*char *key = (char *)malloc(128*sizeof(char));
 	    strcat(key, m->ns);
 	    strcat(key, "_");
