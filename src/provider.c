@@ -109,7 +109,7 @@ int symbiomon_provider_register(
         char svr_addr_str[MAXCHAR];
         uint16_t p_id;
         fp_agg = fopen(aggregator_addr_file, "r");
-        int32_t num_aggregators;
+        uint32_t num_aggregators;
         sdskv_database_id_t db_id;
         int i = 0;
         fscanf(fp_agg, "%d\n", &num_aggregators);
