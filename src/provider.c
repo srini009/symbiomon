@@ -316,7 +316,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
     unsigned int current_index = m->buffer_index;
     if (current_index == 0) return SYMBIOMON_SUCCESS;
 
-    uint32_t agg_id = (uint32_t)(m->id)%(p->num_aggregators);
+    uint32_t agg_id = (uint32_t)(m->id)%(provider->num_aggregators);
 
     double min=9999999999.0;
     double max=-9999999999.0;
