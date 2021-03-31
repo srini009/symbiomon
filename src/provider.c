@@ -202,6 +202,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
 
     for(i = 0; i < tl->num_tags; i++) {
         strcat(metric->stringify, "_");
+        fprintf(stderr, "Tag is: %s\n", tl->taglist[i]);
         strcat(metric->stringify, tl->taglist[i]);
     }
 
