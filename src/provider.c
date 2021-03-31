@@ -111,15 +111,12 @@ int symbiomon_provider_register(
         fp_agg = fopen(aggregator_addr_file, "r");
         sdskv_database_id_t db_id;
         int i = 0;
-	fprintf(stderr, "Aggregator file is: %s\n", aggregator_addr_file);
         fscanf(fp_agg, "%d\n", &(p->num_aggregators));
-	fprintf(stderr, "Num aggregators before: %d\n", p->num_aggregators);
         sdskv_client_init(mid, &p->aggcl);
         sdskv_provider_handle_t *aggphs = (sdskv_provider_handle_t *)malloc(sizeof(sdskv_provider_handle_t)*p->num_aggregators);
         sdskv_database_id_t *aggdbids = (sdskv_database_id_t *)malloc(sizeof(sdskv_database_id_t)*p->num_aggregators);
         while(fscanf(fp_agg, "%s %u %s\n", svr_addr_str, &p_id, db_name) != EOF) {
           hg_addr_t svr_addr; 
-	  fprintf(stderr, "SERVER and PROVIDER ID: %s, %u\n", svr_addr_str, p_id);
           int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
           assert(hret == HG_SUCCESS);
 	  hret = sdskv_provider_handle_create(p->aggcl, svr_addr, p_id, &(aggphs[i]));
@@ -128,7 +125,6 @@ int symbiomon_provider_register(
 	  assert(hret == SDSKV_SUCCESS);
           i++;
         }
-	fprintf(stderr, "Num aggregators after: %d\n", p->num_aggregators);
         p->use_aggregator = 1;
         p->aggphs = aggphs;
         p->aggdbids = aggdbids;
@@ -323,6 +319,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
     fprintf(stderr, "Metric id and num_aggregators are: %lu and %d\n", m->id, provider->num_aggregators);
 
     uint32_t agg_id = (uint32_t)(m->id)%(provider->num_aggregators);
+    fprintf(stderr, "Agg id: %d\n", agg_id);
     int ret;
 
     double min=9999999999.0;
