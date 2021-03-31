@@ -167,11 +167,30 @@ int symbiomon_provider_destroy(
     return SYMBIOMON_SUCCESS;
 }
 
-#ifdef USE_AGGREGATOR
 symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider, symbiomon_metric_agg_op_t agg)
-#else
-symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider)
+{
+    symbiomon_return_t ret = symbiomon_provider_metric_create(ns, name, t, desc, tl, m, provider);
+    if(ret != SYMBIOMON_SUCCESS) return ret;
+
+#ifdef USE_AGGREGATOR
+
+    strcat((*m)->stringify, ns);
+    strcat((*m)->stringify, "_");
+    strcat((*m)->stringify, name);
+    (*m)->aggregator_id = symbiomon_hash((*m)->stringify);
+    (*m)->agg_op = agg;
+
+    for(i = 0; i < tl->num_tags; i++) {
+        strcat((*m)->stringify, "_");
+        strcat((*m)->stringify, tl->taglist[i]);
+    }
+
 #endif
+
+    return SYMBIOMON_SUCCESS;
+}
+
+symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider)
 {
     if(!ns || !name)
         return SYMBIOMON_ERR_INVALID_NAME;
@@ -198,22 +217,6 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     metric->buffer_index = 0;
     metric->buffer = (symbiomon_metric_buffer)calloc(METRIC_BUFFER_SIZE, sizeof(symbiomon_metric_sample));
     add_metric(provider, metric);
-
-    strcat(metric->stringify, ns);
-    strcat(metric->stringify, "_");
-    strcat(metric->stringify, name);
-
-#ifdef USE_AGGREGATOR
-    metric->aggregator_id = symbiomon_hash(metric->stringify);
-    metric->agg_op = agg;
-
-    for(i = 0; i < tl->num_tags; i++) {
-        strcat(metric->stringify, "_");
-        strcat(metric->stringify, tl->taglist[i]);
-    }
-#endif
-
-    fprintf(stderr, "Created metric with name and ns: %s and %s, and stringify: %s\n", name, ns, metric->stringify);
 
     *m = metric;
 
