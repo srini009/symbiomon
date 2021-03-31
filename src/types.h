@@ -82,6 +82,9 @@ typedef struct symbiomon_metric {
     char desc[200];
     char name[128];
     char ns[128];
+#ifdef USE_AGGREGATOR
+    char stringify[256];
+#endif
     symbiomon_taglist_t taglist;
     symbiomon_metric_id_t id;
     UT_hash_handle      hh;

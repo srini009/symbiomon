@@ -175,6 +175,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     /* create an id for the new metric */
     symbiomon_metric_id_t id;
     symbiomon_id_from_string_identifiers(ns, name, tl->taglist, tl->num_tags, &id);
+    int i;
 
     symbiomon_metric* existing = find_metric(provider, &(id));
     if(existing) {
@@ -195,7 +196,17 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     metric->buffer = (symbiomon_metric_buffer)calloc(METRIC_BUFFER_SIZE, sizeof(symbiomon_metric_sample));
     add_metric(provider, metric);
 
-    fprintf(stderr, "Created metric with name and ns: %s and %s\n", name, ns);
+    strcat(metric->stringify, ns);
+    strcat(metric->stringify, "_");
+    strcat(metric->stringify, name);
+
+    for(i = 0; i < tl->num_tags; i++) {
+        strcat(metric->stringify, "_");
+        strcat(metric->stringify, tl->taglist[i]);
+    }
+
+    fprintf(stderr, "Created metric with name and ns: %s and %s, and stringify: %s\n", name, ns, metric->stringify);
+
     *m = metric;
 
     return SYMBIOMON_SUCCESS;
@@ -333,10 +344,8 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
                 sum += m->buffer[current_index].val; 
             }
 	    break;
-	    char *key = (char *)malloc(128*sizeof(char));
-	    strcat(key, m->ns);
-	    strcat(key, "_");
-	    strcat(key, m->name);
+	    char *key = (char *)malloc(256*sizeof(char));
+	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_SUM");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &sum, sizeof(double));
@@ -348,10 +357,8 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
                 sum += m->buffer[current_index].val; 
             }
 	    avg = sum/(double)current_index;
-	    char *key = (char *)malloc(128*sizeof(char));
-	    strcat(key, m->ns);
-	    strcat(key, "_");
-	    strcat(key, m->name);
+	    char *key = (char *)malloc(256*sizeof(char));
+	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_AVG");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &avg, sizeof(double));
@@ -363,10 +370,8 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    for(i=0; i < current_index; i++) {
                 min = (m->buffer[current_index].val < min ? m->buffer[current_index].val:min);
             }
-	    char *key = (char *)malloc(128*sizeof(char));
-	    strcat(key, m->ns);
-	    strcat(key, "_");
-	    strcat(key, m->name);
+	    char *key = (char *)malloc(256*sizeof(char));
+	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_MIN");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(double));
@@ -378,10 +383,8 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    for(i=0; i < current_index; i++) {
                 max = (m->buffer[current_index].val > max ? m->buffer[current_index].val:max);
             }
-	    char *key = (char *)malloc(128*sizeof(char));
-	    strcat(key, m->ns);
-	    strcat(key, "_");
-	    strcat(key, m->name);
+	    char *key = (char *)malloc(256*sizeof(char));
+	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_MAX");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
@@ -389,10 +392,8 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    break;
         }
 	case SYMBIOMON_AGG_OP_STORE: {
-	    char *key = (char *)malloc(128*sizeof(char));
-	    strcat(key, m->ns);
-	    strcat(key, "_");
-	    strcat(key, m->name);
+	    char *key = (char *)malloc(256*sizeof(char));
+	    strcpy(key, m->stringify);
 	    symbiomon_metric_buffer buf = (symbiomon_metric_buffer)malloc(current_index*sizeof(symbiomon_metric_sample));
 	    memcpy(buf, m->buffer, current_index*sizeof(symbiomon_metric_sample));
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)buf, sizeof(current_index*sizeof(symbiomon_metric_sample)));
