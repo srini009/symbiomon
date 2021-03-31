@@ -83,7 +83,7 @@ symbiomon_return_t symbiomon_taglist_destroy(symbiomon_taglist_t taglist)
 symbiomon_return_t symbiomon_metric_create_with_aggregation(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* m, symbiomon_provider_t p, symbiomon_metric_agg_op_t agg)
 
 {
-    return symbiomon_provider_metric_create(ns, name, t, desc, taglist, m, p, agg);
+    return symbiomon_provider_metric_create_with_aggregation(ns, name, t, desc, taglist, m, p, agg);
 }
 
 symbiomon_return_t symbiomon_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t taglist, symbiomon_metric_t* m, symbiomon_provider_t p)
