@@ -109,7 +109,6 @@ int symbiomon_provider_register(
         char svr_addr_str[MAXCHAR];
         uint16_t p_id;
         fp_agg = fopen(aggregator_addr_file, "r");
-        sdskv_database_id_t db_id;
         int i = 0;
         fscanf(fp_agg, "%d\n", &(p->num_aggregators));
         sdskv_client_init(mid, &p->aggcl);
@@ -121,7 +120,7 @@ int symbiomon_provider_register(
           assert(hret == HG_SUCCESS);
 	  hret = sdskv_provider_handle_create(p->aggcl, svr_addr, p_id, &(aggphs[i]));
 	  assert(hret == SDSKV_SUCCESS);
-	  hret = sdskv_open(aggphs[i], db_name, &aggdbids[db_id]); 
+	  hret = sdskv_open(aggphs[i], db_name, &aggdbids[i]); 
 	  assert(hret == SDSKV_SUCCESS);
           i++;
         }
