@@ -167,7 +167,11 @@ int symbiomon_provider_destroy(
     return SYMBIOMON_SUCCESS;
 }
 
+#ifdef USE_AGGREGATOR
 symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider, symbiomon_metric_agg_op_t agg)
+#else
+symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider)
+#endif
 {
     if(!ns || !name)
         return SYMBIOMON_ERR_INVALID_NAME;
@@ -192,7 +196,6 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     metric->type = t;
     metric->taglist = tl;
     metric->buffer_index = 0;
-    metric->agg_op = agg;
     metric->buffer = (symbiomon_metric_buffer)calloc(METRIC_BUFFER_SIZE, sizeof(symbiomon_metric_sample));
     add_metric(provider, metric);
 
@@ -200,11 +203,15 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     strcat(metric->stringify, "_");
     strcat(metric->stringify, name);
 
+#ifdef USE_AGGREGATOR
+    metric->aggregator_id = symbiomon_hash(metric->stringify);
+    metric->agg_op = agg;
+
     for(i = 0; i < tl->num_tags; i++) {
         strcat(metric->stringify, "_");
-        fprintf(stderr, "Tag is: %s\n", tl->taglist[i]);
         strcat(metric->stringify, tl->taglist[i]);
     }
+#endif
 
     fprintf(stderr, "Created metric with name and ns: %s and %s, and stringify: %s\n", name, ns, metric->stringify);
 
