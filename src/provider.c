@@ -315,16 +315,14 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
     unsigned int current_index = m->buffer_index;
     if (current_index == 0) return SYMBIOMON_SUCCESS;
 
-    fprintf(stderr, "Metric id and num_aggregators are: %lu and %d\n", m->id, provider->num_aggregators);
-
     uint32_t agg_id = (uint32_t)(m->id)%(provider->num_aggregators);
-    fprintf(stderr, "Agg id: %d\n", agg_id);
     int ret;
 
     double min=9999999999.0;
     double max=-9999999999.0;
     double avg=0.0;
     double sum=0.0;
+
     switch(metric->agg_op) {
         case SYMBIOMON_AGG_OP_NULL: {
             break;
@@ -335,6 +333,14 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
                 sum += m->buffer[current_index].val; 
             }
 	    break;
+	    char *key = (char *)malloc(128*sizeof(char));
+	    strcat(key, m->ns);
+	    strcat(key, "_");
+	    strcat(key, m->name);
+	    strcat(key, "_");
+	    strcat(key, "_SUM");
+	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &sum, sizeof(double));
+	    assert(ret == SDSKV_SUCCESS);
         }
 	case SYMBIOMON_AGG_OP_AVG: {
 	    int i=0;
@@ -349,7 +355,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    strcat(key, "_");
 	    strcat(key, "_AVG");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &avg, sizeof(double));
-	    if(ret == SDSKV_SUCCESS) { fprintf(stderr, "Key-Value pair successfully written\n"); }
+	    assert(ret == SDSKV_SUCCESS);
 	    break;
         }
 	case SYMBIOMON_AGG_OP_MIN: {
@@ -357,6 +363,14 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    for(i=0; i < current_index; i++) {
                 min = (m->buffer[current_index].val < min ? m->buffer[current_index].val:min);
             }
+	    char *key = (char *)malloc(128*sizeof(char));
+	    strcat(key, m->ns);
+	    strcat(key, "_");
+	    strcat(key, m->name);
+	    strcat(key, "_");
+	    strcat(key, "_MIN");
+	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(double));
+	    assert(ret == SDSKV_SUCCESS);
 	    break;
         }
 	case SYMBIOMON_AGG_OP_MAX: {
@@ -364,6 +378,14 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    for(i=0; i < current_index; i++) {
                 max = (m->buffer[current_index].val > max ? m->buffer[current_index].val:max);
             }
+	    char *key = (char *)malloc(128*sizeof(char));
+	    strcat(key, m->ns);
+	    strcat(key, "_");
+	    strcat(key, m->name);
+	    strcat(key, "_");
+	    strcat(key, "_MAX");
+	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
+	    assert(ret == SDSKV_SUCCESS);
 	    break;
         }
 	case SYMBIOMON_AGG_OP_STORE: {
@@ -374,7 +396,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    symbiomon_metric_buffer buf = (symbiomon_metric_buffer)malloc(current_index*sizeof(symbiomon_metric_sample));
 	    memcpy(buf, m->buffer, current_index*sizeof(symbiomon_metric_sample));
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)buf, sizeof(current_index*sizeof(symbiomon_metric_sample)));
-	    if(ret == SDSKV_SUCCESS) { fprintf(stderr, "Key-Value pair successfully written\n"); }
+	    assert(ret == SDSKV_SUCCESS);
 	    break;
         }
 
