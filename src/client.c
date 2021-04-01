@@ -116,8 +116,6 @@ symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
 {
     switch(m->type) {
         case SYMBIOMON_TYPE_COUNTER:
-	  fprintf(stderr, "Really? I get here?\n");
-	  fprintf(stderr, "Buffer index is: %d and name: %s\n", m->buffer_index, m->name);
           if((m->buffer_index >=1) && (m->buffer[m->buffer_index-1].val > val)) 
               return SYMBIOMON_ERR_INVALID_VALUE;
           break;
