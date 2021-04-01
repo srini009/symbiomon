@@ -203,6 +203,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
 
     symbiomon_metric* existing = find_metric(provider, &(id));
     if(existing) {
+        *m = existing;
         return SYMBIOMON_ERR_METRIC_EXISTS;
     }
 
