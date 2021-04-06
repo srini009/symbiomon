@@ -48,15 +48,15 @@ typedef enum symbiomon_metric_type {
    SYMBIOMON_TYPE_GAUGE    
 } symbiomon_metric_type_t;
 
-typedef enum symbiomon_metric_agg_op {
-   SYMBIOMON_AGG_OP_NULL,
-   SYMBIOMON_AGG_OP_STORE,
-   SYMBIOMON_AGG_OP_SUM,
-   SYMBIOMON_AGG_OP_AVG,
-   SYMBIOMON_AGG_OP_MIN,
-   SYMBIOMON_AGG_OP_MAX
-   SYMBIOMON_AGG_OP_ANOMALY
-} symbiomon_metric_agg_op_t;
+typedef enum symbiomon_metric_reduction_op {
+   SYMBIOMON_REDUCTION_OP_NULL,
+   SYMBIOMON_REDUCTION_OP_STORE,
+   SYMBIOMON_REDUCTION_OP_SUM,
+   SYMBIOMON_REDUCTION_OP_AVG,
+   SYMBIOMON_REDUCTION_OP_MIN,
+   SYMBIOMON_REDUCTION_OP_MAX
+   SYMBIOMON_REDUCTION_OP_ANOMALY
+} symbiomon_metric_reduction_op_t;
 
 typedef struct symbiomon_metric_sample {
    double time;

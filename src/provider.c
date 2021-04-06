@@ -167,7 +167,7 @@ int symbiomon_provider_destroy(
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_metric_create_with_aggregation(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider, symbiomon_metric_agg_op_t agg)
+symbiomon_return_t symbiomon_provider_metric_create_with_reduction(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider, symbiomon_metric_reduction_op_t op)
 {
     int i;
     symbiomon_return_t ret = symbiomon_provider_metric_create(ns, name, t, desc, tl, m, provider);
@@ -179,7 +179,7 @@ symbiomon_return_t symbiomon_provider_metric_create_with_aggregation(const char 
     strcat((*m)->stringify, "_");
     strcat((*m)->stringify, name);
     (*m)->aggregator_id = symbiomon_hash((*m)->stringify);
-    (*m)->agg_op = agg;
+    (*m)->reduction_op = op;
 
     for(i = 0; i < tl->num_tags; i++) {
         strcat((*m)->stringify, "_");
@@ -348,11 +348,11 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
     double avg=0.0;
     double sum=0.0;
 
-    switch(metric->agg_op) {
-        case SYMBIOMON_AGG_OP_NULL: {
+    switch(metric->reduction_op) {
+        case SYMBIOMON_REDUCTION_OP_NULL: {
             break;
         }
-	case SYMBIOMON_AGG_OP_SUM: {
+	case SYMBIOMON_REDUCTION_OP_SUM: {
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
                 sum += m->buffer[current_index].val; 
@@ -366,7 +366,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
         }
-	case SYMBIOMON_AGG_OP_AVG: {
+	case SYMBIOMON_REDUCTION_OP_AVG: {
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
                 sum += m->buffer[current_index].val; 
@@ -381,7 +381,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
             free(key);
 	    break;
         }
-	case SYMBIOMON_AGG_OP_MIN: {
+	case SYMBIOMON_REDUCTION_OP_MIN: {
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
                 min = (m->buffer[current_index].val < min ? m->buffer[current_index].val:min);
@@ -395,7 +395,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
             free(key);
 	    break;
         }
-	case SYMBIOMON_AGG_OP_MAX: {
+	case SYMBIOMON_REDUCTION_OP_MAX: {
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
                 max = (m->buffer[current_index].val > max ? m->buffer[current_index].val:max);
@@ -409,7 +409,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
             free(key);
 	    break;
         }
-	case SYMBIOMON_AGG_OP_STORE: {
+	case SYMBIOMON_REDUCTION_OP_STORE: {
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    symbiomon_metric_buffer buf = (symbiomon_metric_buffer)malloc(current_index*sizeof(symbiomon_metric_sample));
@@ -420,7 +420,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    break;
         }
 
-	case SYMBIOMON_AGG_OP_ANOMALY: {
+	case SYMBIOMON_REDUCTION_OP_ANOMALY: {
 	    int i = 0; int num_outliers = 0;
 	    for(i=0; i < current_index; i++) {
                 sum += m->buffer[current_index].val; 

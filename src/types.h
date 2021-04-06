@@ -76,7 +76,7 @@ static inline hg_return_t hg_proc_symbiomon_metric_id_t(
 
 typedef struct symbiomon_metric {
     symbiomon_metric_type_t type;
-    symbiomon_metric_agg_op_t agg_op;
+    symbiomon_metric_reduction_op_t reduction_op;
     symbiomon_metric_buffer buffer;
     unsigned int buffer_index;
     char desc[200];
