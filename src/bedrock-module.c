@@ -86,7 +86,8 @@ static struct bedrock_module symbiomon = {
     .finalize_client         = symbiomon_finalize_client,
     .create_provider_handle  = symbiomon_create_provider_handle,
     .destroy_provider_handle = symbiomon_destroy_provider_handle,
-    .dependencies            = NULL
+    .provider_dependencies   = NULL,
+    .client_dependencies     = NULL
 };
 
 BEDROCK_REGISTER_MODULE(symbiomon, symbiomon)
