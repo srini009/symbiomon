@@ -427,7 +427,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
             }
 
 	    avg = sum/(double)current_index;
-            double * outlier_list = (double*)sizeof(double*current_index);
+            double * outlier_list = (double*)malloc(sizeof(double)*current_index);
 	    for(i=0; i < current_index; i++) {
                 if ((m->buffer[current_index].val < 0.6*avg) || (m->buffer[current_index].val > 1.60*avg)) {
                     outlier_list[num_outliers] = m->buffer[current_index].val;
