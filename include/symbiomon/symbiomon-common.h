@@ -55,6 +55,7 @@ typedef enum symbiomon_metric_agg_op {
    SYMBIOMON_AGG_OP_AVG,
    SYMBIOMON_AGG_OP_MIN,
    SYMBIOMON_AGG_OP_MAX
+   SYMBIOMON_AGG_OP_ANOMALY
 } symbiomon_metric_agg_op_t;
 
 typedef struct symbiomon_metric_sample {

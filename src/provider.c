@@ -364,6 +364,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    strcat(key, "_SUM");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &sum, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
+            free(key);
         }
 	case SYMBIOMON_AGG_OP_AVG: {
 	    int i=0;
@@ -377,6 +378,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    strcat(key, "_AVG");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &avg, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
+            free(key);
 	    break;
         }
 	case SYMBIOMON_AGG_OP_MIN: {
@@ -390,6 +392,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    strcat(key, "_MIN");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
+            free(key);
 	    break;
         }
 	case SYMBIOMON_AGG_OP_MAX: {
@@ -403,6 +406,7 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    strcat(key, "_MAX");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
+            free(key);
 	    break;
         }
 	case SYMBIOMON_AGG_OP_STORE: {
@@ -412,6 +416,35 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
 	    memcpy(buf, m->buffer, current_index*sizeof(symbiomon_metric_sample));
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)buf, sizeof(current_index*sizeof(symbiomon_metric_sample)));
 	    assert(ret == SDSKV_SUCCESS);
+            free(key);
+	    break;
+        }
+
+	case SYMBIOMON_AGG_OP_ANOMALY: {
+	    int i = 0; int num_outliers = 0;
+	    for(i=0; i < current_index; i++) {
+                sum += m->buffer[current_index].val; 
+            }
+
+	    avg = sum/(double)current_index;
+            double * outlier_list = (double*)sizeof(double*current_index);
+	    for(i=0; i < current_index; i++) {
+                if ((m->buffer[current_index].val < 0.6*avg) || (m->buffer[current_index].val > 1.60*avg)) {
+                    outlier_list[num_outliers] = m->buffer[current_index].val;
+                    num_outliers++;
+                }
+            }
+                
+	    char *key = (char *)malloc(256*sizeof(char));
+	    strcpy(key, m->stringify);
+	    strcat(key, "_");
+	    strcat(key, "_ANOMALY");
+
+	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)outlier_list, sizeof(num_outliers*sizeof(double)));
+	    assert(ret == SDSKV_SUCCESS);
+
+            free(outlier_list);
+            free(key);
 	    break;
         }
 
