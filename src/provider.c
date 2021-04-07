@@ -327,7 +327,7 @@ symbiomon_return_t symbiomon_provider_destroy_all_metrics(symbiomon_provider_t p
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbiomon_provider_t provider)
 {
 
 #ifdef USE_AGGREGATOR
@@ -453,12 +453,12 @@ symbiomon_return_t symbiomon_provider_metric_aggregate(symbiomon_metric_t m, sym
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_aggregate_all_metrics(symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider)
 {
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
     HASH_ITER(hh, provider->metrics, r, tmp) {
-	ret = symbiomon_provider_metric_aggregate(r, provider);
+	ret = symbiomon_provider_metric_reduce(r, provider);
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
     }
 
