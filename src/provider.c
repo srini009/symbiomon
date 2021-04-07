@@ -362,8 +362,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_SUM");
-	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &sum, sizeof(double));
-	    assert(ret == SDSKV_SUCCESS);
+	    //ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &sum, sizeof(double));
+	    //assert(ret == SDSKV_SUCCESS);
             free(key);
         }
 	case SYMBIOMON_REDUCTION_OP_AVG: {
@@ -376,8 +376,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_AVG");
-	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &avg, sizeof(double));
-	    assert(ret == SDSKV_SUCCESS);
+	    //ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &avg, sizeof(double));
+	    //assert(ret == SDSKV_SUCCESS);
             free(key);
 	    break;
         }
@@ -390,8 +390,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_MIN");
-	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(double));
-	    assert(ret == SDSKV_SUCCESS);
+	    //ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(double));
+	    //assert(ret == SDSKV_SUCCESS);
             free(key);
 	    break;
         }
@@ -404,8 +404,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_MAX");
-	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
-	    assert(ret == SDSKV_SUCCESS);
+	    //ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
+	    //assert(ret == SDSKV_SUCCESS);
             free(key);
 	    break;
         }
@@ -414,8 +414,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    strcpy(key, m->stringify);
 	    symbiomon_metric_buffer buf = (symbiomon_metric_buffer)malloc(current_index*sizeof(symbiomon_metric_sample));
 	    memcpy(buf, m->buffer, current_index*sizeof(symbiomon_metric_sample));
-	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)buf, sizeof(current_index*sizeof(symbiomon_metric_sample)));
-	    assert(ret == SDSKV_SUCCESS);
+	    //ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)buf, sizeof(current_index*sizeof(symbiomon_metric_sample)));
+	    //assert(ret == SDSKV_SUCCESS);
             free(key);
 	    break;
         }
@@ -440,8 +440,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    strcat(key, "_");
 	    strcat(key, "_ANOMALY");
 
-	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)outlier_list, sizeof(num_outliers*sizeof(double)));
-	    assert(ret == SDSKV_SUCCESS);
+	    //ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)outlier_list, sizeof(num_outliers*sizeof(double)));
+	    //assert(ret == SDSKV_SUCCESS);
 
             free(outlier_list);
             free(key);
