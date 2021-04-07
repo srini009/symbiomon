@@ -455,6 +455,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 
 symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider)
 {
+    if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
+
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
     HASH_ITER(hh, provider->metrics, r, tmp) {
