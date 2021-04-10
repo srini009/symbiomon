@@ -31,6 +31,7 @@ typedef struct symbiomon_provider {
     hg_id_t metric_fetch_id;
     /* ... add other RPC identifiers here ... */
     uint8_t use_aggregator;
+    uint8_t use_reducer;
     uint32_t num_aggregators;
 #ifdef USE_AGGREGATOR
     sdskv_client_t aggcl;
