@@ -14,6 +14,7 @@
 #include <sdskv-client.h>
 #endif
 #ifdef USE_REDUCER
+#include <reducer/reducer-provider-handle.h>
 #include <reducer/reducer-client.h>
 #endif
 

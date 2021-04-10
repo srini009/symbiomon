@@ -13,7 +13,8 @@
 #include <sdskv-client.h>
 #endif
 #ifdef USE_REDUCER
-#include <reducer-client.h>
+#include <reducer/reducer-client.h>
+#include <reducer/reducer-provider-handle.h>
 #endif
 
 static void symbiomon_finalize_provider(void* p);
