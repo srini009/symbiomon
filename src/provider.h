@@ -14,7 +14,7 @@
 #include <sdskv-client.h>
 #endif
 #ifdef USE_REDUCER
-#include <reducer-client.h>
+#include <reducer/reducer-client.h>
 #endif
 
 typedef struct symbiomon_provider {
