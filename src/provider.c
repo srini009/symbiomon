@@ -150,7 +150,7 @@ int symbiomon_provider_register(
         hg_addr_t svr_addr;
         int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
         assert(hret == HG_SUCCESS);
-        hret = reducer_provider_handle_create(p->redcl, svr_addr, p_id, &p->redphl);
+        hret = reducer_metric_handle_create(p->redcl, svr_addr, p_id, &p->redphl);
         assert(hret == REDUCER_SUCCESS);
         p->use_reducer = 1;
 	fprintf(stderr, "Successfully setup reducer support: %d \n");
