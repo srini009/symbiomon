@@ -141,13 +141,12 @@ int symbiomon_provider_register(
     FILE *fp_red = NULL;
     #define MAXCHAR 100
     char * reducer_addr_file = getenv("REDUCER_ADDRESS_FILE");
-    char db_name[128];
     if(reducer_addr_file) {
         char svr_addr_str[MAXCHAR];
         uint16_t p_id;
         fp_red = fopen(reducer_addr_file, "r");
         reducer_client_init(mid, &p->redcl);
-        fscanf(fp_red, "%s %u\n", svr_addr_str, &p_id)
+        fscanf(fp_red, "%s %u\n", svr_addr_str, &p_id);
         hg_addr_t svr_addr;
         int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
         assert(hret == HG_SUCCESS);
