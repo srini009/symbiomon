@@ -112,6 +112,11 @@ symbiomon_return_t symbiomon_metric_reduce_all(symbiomon_provider_t p)
     return symbiomon_provider_reduce_all_metrics(p);
 }
 
+symbiomon_return_t symbiomon_metric_global_reduce_all(symbiomon_provider_t p)
+{
+    return symbiomon_provider_global_reduce_all_metrics(p);
+}
+
 symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val)
 {
     switch(m->type) {

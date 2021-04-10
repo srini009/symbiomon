@@ -13,6 +13,9 @@
 #ifdef USE_AGGREGATOR
 #include <sdskv-client.h>
 #endif
+#ifdef USE_REDUCER
+#include <reducer-client.h>
+#endif
 
 typedef struct symbiomon_provider {
     /* Margo/Argobots/Mercury environment */
@@ -34,6 +37,10 @@ typedef struct symbiomon_provider {
     sdskv_provider_handle_t * aggphs;
     sdskv_database_id_t * aggdbids;
 #endif
+#ifdef USE_REDUCER
+    reducer_client_t redcl;
+    reducer_provider_handle_t redphl;
+#endif
 } symbiomon_provider;
 
 symbiomon_return_t symbiomon_provider_metric_create_with_reduction(const char *ns, const char *name, symbiomon_metric_type_t t, const char *desc, symbiomon_taglist_t tl, symbiomon_metric_t* m, symbiomon_provider_t provider, symbiomon_metric_reduction_op_t op);
@@ -47,5 +54,7 @@ symbiomon_return_t symbiomon_provider_destroy_all_metrics(symbiomon_provider_t p
 symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbiomon_provider_t provider);
 
 symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider);
+
+symbiomon_return_t symbiomon_provider_global_reduce_all_metrics(symbiomon_provider_t provider);
 
 #endif

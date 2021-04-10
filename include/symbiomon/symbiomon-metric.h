@@ -35,6 +35,7 @@ symbiomon_return_t symbiomon_metric_destroy(symbiomon_metric_t m, symbiomon_prov
 symbiomon_return_t symbiomon_metric_destroy_all(symbiomon_provider_t provider);
 symbiomon_return_t symbiomon_metric_reduce(symbiomon_metric_t m, symbiomon_provider_t provider);
 symbiomon_return_t symbiomon_metric_reduce_all(symbiomon_provider_t provider);
+symbiomon_return_t symbiomon_metric_global_reduce_all(symbiomon_provider_t p);
 symbiomon_return_t symbiomon_metric_update(symbiomon_metric_t m, double val);
 symbiomon_return_t symbiomon_metric_update_gauge_by_fixed_amount(symbiomon_metric_t m, double diff);
 symbiomon_return_t symbiomon_metric_dump_histogram(symbiomon_metric_t m, const char *filename, size_t num_buckets);

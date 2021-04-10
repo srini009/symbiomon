@@ -27,6 +27,10 @@ if(${ENABLE_AGGREGATOR})
   add_definitions("-DUSE_AGGREGATOR")
 endif(${ENABLE_AGGREGATOR})
 
+if(${ENABLE_REDUCER})
+  add_definitions("-DUSE_REDUCER")
+endif(${ENABLE_REDUCER})
+
 # server library
 add_library (symbiomon-server ${server-src-files} ${dummy-src-files})
 target_link_libraries (symbiomon-server
@@ -59,6 +63,11 @@ if(${ENABLE_AGGREGATOR})
   target_include_directories (symbiomon-server PUBLIC ${SDSKV_INCLUDE_DIR})
   target_link_libraries (symbiomon-server PkgConfig::SDSKV)
 endif(${ENABLE_AGGREGATOR})
+
+if(${ENABLE_REDUCER})
+  target_include_directories (symbiomon-server PUBLIC ${REDUCER_INCLUDE_DIR})
+  target_link_libraries (symbiomon-server PkgConfig::REDUCER)
+endif(${ENABLE_REDUCER})
 
 # admin library
 add_library (symbiomon-admin ${admin-src-files})

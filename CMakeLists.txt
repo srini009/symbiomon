@@ -9,6 +9,7 @@ add_definitions (-g -Wextra -Wall -Wpedantic)
 option (ENABLE_TESTS    "Build tests" OFF)
 option (ENABLE_EXAMPLES "Build examples" OFF)
 option (ENABLE_AGGREGATOR   "Build the aggregator module" OFF)
+option (ENABLE_REDUCER   "Build the reducer module" OFF)
 
 option (ENABLE_BEDROCK  "Build bedrock module" OFF)
 
@@ -38,6 +39,10 @@ endif ()
 
 if (${ENABLE_AGGREGATOR})
     pkg_check_modules (SDSKV REQUIRED IMPORTED_TARGET sdskv-client)
+endif ()
+
+if (${ENABLE_REDUCER})
+    pkg_check_modules (REDUCER REQUIRED IMPORTED_TARGET reducer-client)
 endif ()
 
 # search for margo

@@ -12,6 +12,9 @@
 #ifdef USE_AGGREGATOR
 #include <sdskv-client.h>
 #endif
+#ifdef USE_REDUCER
+#include <reducer-client.h>
+#endif
 
 static void symbiomon_finalize_provider(void* p);
 
@@ -94,6 +97,7 @@ int symbiomon_provider_register(
     margo_register_data(mid, id, (void*)p, NULL);
     p->list_metrics_id = id;
     p->use_aggregator = 0;
+    p->use_reducer = 0;
 
     /* add other RPC registration here */
     /* ... */
@@ -130,6 +134,28 @@ int symbiomon_provider_register(
 	fprintf(stderr, "Successfully setup aggregator support with num_aggregators: %d \n", p->num_aggregators);
     } else {
         fprintf(stderr, "AGGREGATOR_ADDRESS_FILE is not set. Continuing on without aggregator support");
+    }
+#endif
+#ifdef USE_REDUCER
+    FILE *fp_red = NULL;
+    #define MAXCHAR 100
+    char * reducer_addr_file = getenv("REDUCER_ADDRESS_FILE");
+    char db_name[128];
+    if(reducer_addr_file) {
+        char svr_addr_str[MAXCHAR];
+        uint16_t p_id;
+        fp_red = fopen(reducer_addr_file, "r");
+        reducer_client_init(mid, &p->redcl);
+        fscanf(fp_red, "%s %u\n", svr_addr_str, &p_id)
+        hg_addr_t svr_addr;
+        int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
+        assert(hret == HG_SUCCESS);
+        hret = reducer_provider_handle_create(p->redcl, svr_addr, p_id, &p->redphl);
+        assert(hret == REDUCER_SUCCESS);
+        p->use_reducer = 1;
+	fprintf(stderr, "Successfully setup reducer support: %d \n");
+    } else {
+        fprintf(stderr, "REDUCER_ADDRESS_FILE is not set. Continuing on without reducer support");
     }
 #endif
 
@@ -357,7 +383,6 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    for(i=0; i < current_index; i++) {
                 sum += m->buffer[current_index].val; 
             }
-	    break;
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
@@ -365,6 +390,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &sum, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
+	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_AVG: {
 	    int i=0;
@@ -464,6 +490,58 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
     }
 
+    return SYMBIOMON_SUCCESS;
+}
+
+static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metric_t m, symbiomon_provider_t provider)
+{
+#ifdef USE_REDUCER
+    /* find the metric */
+    symbiomon_metric* metric = find_metric(provider, &m->id);
+    if(!metric) {
+        return SYMBIOMON_ERR_INVALID_METRIC;
+    }
+
+    uint32_t agg_id = (uint32_t)(m->aggregator_id)%(provider->num_aggregators);
+    int ret;
+
+    switch(metric->reduction_op) {
+        case SYMBIOMON_REDUCTION_OP_NULL: {
+            break;
+        }
+	case SYMBIOMON_REDUCTION_OP_SUM: {
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_SUM, provider->redphl);
+	    break;
+        }
+	case SYMBIOMON_REDUCTION_OP_AVG: {
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_AVG, provider->redphl);
+	    break;
+        }
+	case SYMBIOMON_REDUCTION_OP_MIN: {
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_MIN, provider->redphl);
+	    break;
+        }
+	case SYMBIOMON_REDUCTION_OP_MAX: {
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_MAX, provider->redphl);
+	    break;
+        }
+	case SYMBIOMON_REDUCTION_OP_ANOMALY: {
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_ANOMALY, provider->redphl);
+	    break;
+        }
+    }
+#endif
+}
+
+symbiomon_return_t symbiomon_provider_global_reduce_all_metrics(symbiomon_provider_t provider)
+{
+    if(provider->use_reducer == 0) return SYMBIOMON_SUCCESS;
+    symbiomon_metric *r, *tmp;
+    symbiomon_return_t ret;
+    HASH_ITER(hh, provider->metrics, r, tmp) {
+	ret = symbiomon_provider_global_metric_reduce(r, provider);
+        if(ret != SYMBIOMON_SUCCESS) { return ret;}
+    }
     return SYMBIOMON_SUCCESS;
 }
 
