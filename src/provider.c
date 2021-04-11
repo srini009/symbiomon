@@ -374,6 +374,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
     double avg=0.0;
     double sum=0.0;
 
+    fprintf(stderr, "Local reduction of: %s\n", m->name);
+
     switch(metric->reduction_op) {
         case SYMBIOMON_REDUCTION_OP_NULL: {
             break;
