@@ -247,7 +247,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     add_metric(provider, metric);
 
     *m = metric;
-    //fprintf(stderr, "Created metric of type: %d and name: %s\n", t, name);
+    fprintf(stderr, "Created metric of type: %d and name: %s\n", t, name);
 
     return SYMBIOMON_SUCCESS;
 }
