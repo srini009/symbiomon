@@ -499,6 +499,7 @@ static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metr
     /* find the metric */
     symbiomon_metric* metric = find_metric(provider, &m->id);
     if(!metric) {
+        fprintf(stderr, "OH DAMMNN!!!\n");
         return SYMBIOMON_ERR_INVALID_METRIC;
     }
 
@@ -537,7 +538,7 @@ static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metr
 
 symbiomon_return_t symbiomon_provider_global_reduce_all_metrics(symbiomon_provider_t provider)
 {
-    if(provider->use_reducer == 0) return SYMBIOMON_SUCCESS;
+    if(provider->use_reducer == 0) { fprintf(stderr, "What THEEEE???\n"); return SYMBIOMON_SUCCESS; }
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
     HASH_ITER(hh, provider->metrics, r, tmp) {
