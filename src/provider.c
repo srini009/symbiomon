@@ -486,6 +486,7 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
     HASH_ITER(hh, provider->metrics, r, tmp) {
+        fprintf(stderr, "Local reduction of: %s\n", r->name);
 	ret = symbiomon_provider_metric_reduce(r, provider);
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
     }
