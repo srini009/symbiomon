@@ -153,7 +153,7 @@ int symbiomon_provider_register(
         hret = reducer_metric_handle_create(p->redcl, svr_addr, p_id, &p->redphl);
         assert(hret == REDUCER_SUCCESS);
         p->use_reducer = 1;
-	fprintf(stderr, "Successfully setup reducer support: %d \n");
+	fprintf(stderr, "Successfully setup reducer support\n");
     } else {
         fprintf(stderr, "REDUCER_ADDRESS_FILE is not set. Continuing on without reducer support");
     }
@@ -536,6 +536,7 @@ static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metr
 symbiomon_return_t symbiomon_provider_global_reduce_all_metrics(symbiomon_provider_t provider)
 {
     if(provider->use_reducer == 0) return SYMBIOMON_SUCCESS;
+    fprintf(stderr, "Trying to reduce: %d metrics\n", provider->num_metrics);
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
     HASH_ITER(hh, provider->metrics, r, tmp) {
