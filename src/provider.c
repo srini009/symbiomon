@@ -374,8 +374,6 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
     double avg=0.0;
     double sum=0.0;
 
-    fprintf(stderr, "Local reduction of: %s\n", m->name);
-
     switch(metric->reduction_op) {
         case SYMBIOMON_REDUCTION_OP_NULL: {
             break;
@@ -507,6 +505,8 @@ static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metr
     uint32_t agg_id = (uint32_t)(m->aggregator_id)%(provider->num_aggregators);
     int ret;
 
+    fprintf(stderr, "Global reduction of: %s\n", m->name);
+
     switch(metric->reduction_op) {
         case SYMBIOMON_REDUCTION_OP_NULL: {
             break;
@@ -541,7 +541,6 @@ symbiomon_return_t symbiomon_provider_global_reduce_all_metrics(symbiomon_provid
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
     HASH_ITER(hh, provider->metrics, r, tmp) {
-        fprintf(stderr, "Trying to reduce: %s metric on the client\n", r->name);
 	ret = symbiomon_provider_global_metric_reduce(r, provider);
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
     }
