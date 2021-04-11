@@ -541,8 +541,8 @@ symbiomon_return_t symbiomon_provider_global_reduce_all_metrics(symbiomon_provid
     symbiomon_return_t ret;
     HASH_ITER(hh, provider->metrics, r, tmp) {
         fprintf(stderr, "Global reduction of: %s\n", r->name);
-	//ret = symbiomon_provider_global_metric_reduce(r, provider);
-        if(ret != SYMBIOMON_SUCCESS) { return ret;}
+	ret = symbiomon_provider_global_metric_reduce(r, provider);
+        //if(ret != SYMBIOMON_SUCCESS) { return ret;}
     }
     return SYMBIOMON_SUCCESS;
 }
