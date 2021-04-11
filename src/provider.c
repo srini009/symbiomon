@@ -536,10 +536,10 @@ static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metr
 symbiomon_return_t symbiomon_provider_global_reduce_all_metrics(symbiomon_provider_t provider)
 {
     if(provider->use_reducer == 0) return SYMBIOMON_SUCCESS;
-    fprintf(stderr, "Trying to reduce: %d metrics\n", provider->num_metrics);
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
     HASH_ITER(hh, provider->metrics, r, tmp) {
+        fprintf(stderr, "Trying to reduce: %s metric on the client\n", r->name);
 	ret = symbiomon_provider_global_metric_reduce(r, provider);
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
     }
