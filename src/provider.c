@@ -430,6 +430,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_MAX");
+            fprintf(stderr, "At the client, max is: %f\n" max);
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
@@ -503,8 +504,6 @@ static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metr
     }
 
     uint32_t agg_id = (uint32_t)(m->aggregator_id)%(provider->num_aggregators);
-    fprintf(stderr, "At the client: %s, %s, %s, %u\n", m->ns, m->name, m->stringify, agg_id);
-
     int ret;
 
     switch(metric->reduction_op) {
