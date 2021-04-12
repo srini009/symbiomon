@@ -381,7 +381,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	case SYMBIOMON_REDUCTION_OP_SUM: {
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
-                sum += m->buffer[current_index].val; 
+                sum += m->buffer[i].val; 
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
@@ -395,7 +395,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	case SYMBIOMON_REDUCTION_OP_AVG: {
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
-                sum += m->buffer[current_index].val; 
+                sum += m->buffer[i].val; 
             }
 	    avg = sum/(double)current_index;
 	    char *key = (char *)malloc(256*sizeof(char));
@@ -410,7 +410,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	case SYMBIOMON_REDUCTION_OP_MIN: {
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
-                min = (m->buffer[current_index].val < min ? m->buffer[current_index].val:min);
+                min = (m->buffer[i].val < min ? m->buffer[i].val:min);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
@@ -424,14 +424,15 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	case SYMBIOMON_REDUCTION_OP_MAX: {
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
-                max = (m->buffer[current_index].val > max ? m->buffer[current_index].val:max);
-                fprintf(stderr, "At the client, vals are: %f\n", m->buffer[current_index].val);
+                max = (m->buffer[i].val > max ? m->buffer[i].val:max);
+                fprintf(stderr, "At the client, vals are: %f\n", m->buffer[i].val);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_MAX");
-            fprintf(stderr, "At the client, max is: %f\n", max);
+            if(!max)
+                fprintf(stderr, "At the client, max is: %f\n", max);
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
@@ -451,14 +452,14 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	case SYMBIOMON_REDUCTION_OP_ANOMALY: {
 	    int i = 0; int num_outliers = 0;
 	    for(i=0; i < current_index; i++) {
-                sum += m->buffer[current_index].val; 
+                sum += m->buffer[i].val; 
             }
 
 	    avg = sum/(double)current_index;
             double * outlier_list = (double*)malloc(sizeof(double)*current_index);
 	    for(i=0; i < current_index; i++) {
-                if ((m->buffer[current_index].val < 0.6*avg) || (m->buffer[current_index].val > 1.60*avg)) {
-                    outlier_list[num_outliers] = m->buffer[current_index].val;
+                if ((m->buffer[i].val < 0.6*avg) || (m->buffer[i].val > 1.60*avg)) {
+                    outlier_list[num_outliers] = m->buffer[i].val;
                     num_outliers++;
                 }
             }
