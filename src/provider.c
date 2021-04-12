@@ -247,7 +247,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     add_metric(provider, metric);
 
     *m = metric;
-    fprintf(stderr, "Created metric of type: %d and name: %s\n", t, name);
+    //fprintf(stderr, "Created metric of type: %d and name: %s\n", t, name);
 
     return SYMBIOMON_SUCCESS;
 }
@@ -425,14 +425,11 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
                 max = (m->buffer[i].val > max ? m->buffer[i].val:max);
-                fprintf(stderr, "At the client, vals are: %f\n", m->buffer[i].val);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_MAX");
-            if(!max)
-                fprintf(stderr, "At the client, max is: %f\n", max);
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
