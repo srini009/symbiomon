@@ -430,7 +430,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_MAX");
-            fprintf(stderr, "At the client, max is: %f\n" max);
+            fprintf(stderr, "At the client, max is: %f\n", max);
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
