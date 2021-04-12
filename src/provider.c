@@ -486,7 +486,6 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
     HASH_ITER(hh, provider->metrics, r, tmp) {
-        fprintf(stderr, "Local reduction of: %s\n", r->name);
 	ret = symbiomon_provider_metric_reduce(r, provider);
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
     }
@@ -494,7 +493,7 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
     return SYMBIOMON_SUCCESS;
 }
 
-static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metric_t m, symbiomon_provider_t provider)
+static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metric_t m, symbiomon_provider_t provider, size_t cohort_size)
 {
 #ifdef USE_REDUCER
     /* find the metric */
@@ -511,38 +510,38 @@ static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metr
             break;
         }
 	case SYMBIOMON_REDUCTION_OP_SUM: {
-            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_SUM, provider->redphl);
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_SUM, provider->redphl, cohort_size);
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_AVG: {
-            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_AVG, provider->redphl);
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_AVG, provider->redphl, cohort_size);
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_MIN: {
-            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_MIN, provider->redphl);
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_MIN, provider->redphl, cohort_size);
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_MAX: {
-            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_MAX, provider->redphl);
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_MAX, provider->redphl, cohort_size);
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_ANOMALY: {
-            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_ANOMALY, provider->redphl);
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_ANOMALY, provider->redphl, cohort_size);
 	    break;
         }
     }
 #endif
+    return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_global_reduce_all_metrics(symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_global_reduce_all_metrics(symbiomon_provider_t provider, size_t cohort_size)
 {
     if(provider->use_reducer == 0) return SYMBIOMON_SUCCESS;
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
     HASH_ITER(hh, provider->metrics, r, tmp) {
-        fprintf(stderr, "Global reduction of: %s\n", r->name);
-	ret = symbiomon_provider_global_metric_reduce(r, provider);
-        //if(ret != SYMBIOMON_SUCCESS) { return ret;}
+	ret = symbiomon_provider_global_metric_reduce(r, provider, cohort_size);
+        if(ret != SYMBIOMON_SUCCESS) { return ret; }
     }
     return SYMBIOMON_SUCCESS;
 }
