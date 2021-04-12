@@ -425,7 +425,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
                 max = (m->buffer[i].val > max ? m->buffer[i].val:max);
-                fprintf(stderr, "At the client: name: %s_MAX, agg_id: %d, checking against: %lf, max is: %lf\n", m->stringify, agg_id, m->buffer[i].val, max);
+                fprintf(stderr, "At the client: name: %s_MAX, agg_id: %d, checking against: %lf, max is: %lf, current_index is: %d\n", m->stringify, agg_id, m->buffer[i].val, max, current_index);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
