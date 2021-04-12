@@ -503,6 +503,8 @@ static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metr
     }
 
     uint32_t agg_id = (uint32_t)(m->aggregator_id)%(provider->num_aggregators);
+    fprintf(stderr, "At the client: %s, %s, %s, %u\n", m->ns, m->name, m->stringify, agg_id);
+
     int ret;
 
     switch(metric->reduction_op) {
