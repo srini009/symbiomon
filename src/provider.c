@@ -425,12 +425,14 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    int i=0;
 	    for(i=0; i < current_index; i++) {
                 max = (m->buffer[i].val > max ? m->buffer[i].val:max);
+                fprintf(stderr, "At the client: name: %s, agg_id: %d, checking against: %lf\n", key, agg_id, m->buffer[i].val);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_MAX");
-            if(!max) fprintf(stderr, "At the client: name: %s, agg_id: %d, and max: %lf\n", key, agg_id, max);
+            if(!max) fprintf(stderr, "At the client: name: %s, agg_id: %d, and max: %lf, current_index: %d\n", key, agg_id, max, current_index);
+             
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
