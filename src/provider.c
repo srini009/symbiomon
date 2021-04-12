@@ -370,7 +370,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
     int ret;
 
     double min=9999999999.0;
-    double max=-9999999999.0;
+    //double max=-9999999999.0;
     double avg=0.0;
     double sum=0.0;
 
@@ -423,7 +423,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
         }
 	case SYMBIOMON_REDUCTION_OP_MAX: {
 	    int i=0;
-            double max = 0.0;
+            double max = -9999999999.0;
 	    for(i=0; i < current_index; i++) {
                 max = (m->buffer[i].val > max ? m->buffer[i].val:max);
                 fprintf(stderr, "At the client: name: %s_MAX, agg_id: %d, checking against: %lf, max is: %lf, current_index is: %d\n", m->stringify, agg_id, m->buffer[i].val, max, current_index);
@@ -432,7 +432,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    strcpy(key, m->stringify);
 	    strcat(key, "_");
 	    strcat(key, "_MAX");
-            fprintf(stderr, "At the client: name: %s, agg_id: %d, and max: %lf, current_index: %d\n", key, agg_id, max, current_index);
+            fprintf(stderr, "At the client before sending: name: %s, agg_id: %d, and max: %lf, current_index: %d\n", key, agg_id, max, current_index);
              
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
