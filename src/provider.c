@@ -438,7 +438,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(double));
             double val = 0.0;
             size_t valsize = sizeof(double);
-	    ret = sdskv_get(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &val, &valsize);
+	    ret = sdskv_get(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, sizeof(key), &val, &valsize);
             fprintf(stderr, "At the client double checking: name: %s, agg_id: %d, and max: %lf, current_index: %d\n", key, agg_id, val, current_index);
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
