@@ -428,7 +428,9 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
                 max = (m->buffer[i].val > max ? m->buffer[i].val:max);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
-	    strcpy(key, m->stringify);
+	    strcpy(key, m->ns);
+	    strcpy(key, "_");
+	    strcpy(key, m->name);
 	    strcat(key, "_MAX");
             fprintf(stderr, "At the client before sending: name: %s, agg_id: %d, and max: %lf, current_index: %d\n", key, agg_id, max, current_index);
              
