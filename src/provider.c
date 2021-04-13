@@ -4,6 +4,7 @@
  * See COPYRIGHT in top-level directory.
  */
 #include <assert.h>
+#include <math.h>
 #include "symbiomon/symbiomon-server.h"
 #include "symbiomon/symbiomon-common.h"
 #include "symbiomon/symbiomon-backend.h"
@@ -369,23 +370,18 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
     uint32_t agg_id = (uint32_t)(m->aggregator_id)%(provider->num_aggregators);
     int ret;
 
-    double min=9999999999.0;
-    //double max=-9999999999.0;
-    double avg=0.0;
-    double sum=0.0;
-
     switch(metric->reduction_op) {
         case SYMBIOMON_REDUCTION_OP_NULL: {
             break;
         }
 	case SYMBIOMON_REDUCTION_OP_SUM: {
 	    int i=0;
+	    double sum = 0;
 	    for(i=0; i < current_index; i++) {
                 sum += m->buffer[i].val; 
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
-	    strcat(key, "_");
 	    strcat(key, "_SUM");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &sum, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
@@ -394,13 +390,13 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
         }
 	case SYMBIOMON_REDUCTION_OP_AVG: {
 	    int i=0;
+            double sum = 0, avg = 0;
 	    for(i=0; i < current_index; i++) {
                 sum += m->buffer[i].val; 
             }
 	    avg = sum/(double)current_index;
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
-	    strcat(key, "_");
 	    strcat(key, "_AVG");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &avg, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
@@ -409,12 +405,12 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
         }
 	case SYMBIOMON_REDUCTION_OP_MIN: {
 	    int i=0;
+            double min = 99999999999.0;
 	    for(i=0; i < current_index; i++) {
                 min = (m->buffer[i].val < min ? m->buffer[i].val:min);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
-	    strcat(key, "_");
 	    strcat(key, "_MIN");
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
@@ -430,15 +426,9 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_MAX");
-            fprintf(stderr, "At the client before sending: name: %s, agg_id: %d, and max: %lf, current_index: %d\n", key, agg_id, max, current_index);
              
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(max));
 	    assert(ret == SDSKV_SUCCESS);
-            //double val = 0.0;
-            //size_t valsize = sizeof(double);
-	    //ret = sdskv_get(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &val, &valsize);
-            //fprintf(stderr, "At the client double checking: name: %s, agg_id: %d, and max: %lf, current_index: %d\n", key, agg_id, val, current_index);
-	    //assert(ret == SDSKV_SUCCESS);
             free(key);
 	    break;
         }
@@ -455,14 +445,18 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 
 	case SYMBIOMON_REDUCTION_OP_ANOMALY: {
 	    int i = 0; int num_outliers = 0;
+            double sum = 0, avg = 0, sd = 0;
 	    for(i=0; i < current_index; i++) {
                 sum += m->buffer[i].val; 
             }
 
 	    avg = sum/(double)current_index;
+            for(i=0; i < current_index; i++)
+                sd += pow(m->buffer[i].val - avg, 2)
+
             double * outlier_list = (double*)malloc(sizeof(double)*current_index);
 	    for(i=0; i < current_index; i++) {
-                if ((m->buffer[i].val < 0.6*avg) || (m->buffer[i].val > 1.60*avg)) {
+                if ((m->buffer[i].val < avg-3*sd) || (m->buffer[i].val > avg+3*sd)) {
                     outlier_list[num_outliers] = m->buffer[i].val;
                     num_outliers++;
                 }
@@ -470,7 +464,6 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
                 
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
-	    strcat(key, "_");
 	    strcat(key, "_ANOMALY");
 
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)outlier_list, sizeof(num_outliers*sizeof(double)));
@@ -480,7 +473,6 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
             free(key);
 	    break;
         }
-
     }
 #endif
     return SYMBIOMON_SUCCESS;
