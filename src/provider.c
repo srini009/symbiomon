@@ -433,6 +433,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
             fprintf(stderr, "At the client before sending: name: %s, agg_id: %d, and max: %lf, current_index: %d\n", key, agg_id, max, current_index);
              
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(max));
+	    assert(ret == SDSKV_SUCCESS);
             //double val = 0.0;
             //size_t valsize = sizeof(double);
 	    //ret = sdskv_get(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &val, &valsize);
