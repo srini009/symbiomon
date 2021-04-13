@@ -452,7 +452,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 
 	    avg = sum/(double)current_index;
             for(i=0; i < current_index; i++)
-                sd += pow(m->buffer[i].val - avg, 2)
+                sd += pow(m->buffer[i].val - avg, 2);
 
             double * outlier_list = (double*)malloc(sizeof(double)*current_index);
 	    for(i=0; i < current_index; i++) {
