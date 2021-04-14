@@ -47,7 +47,7 @@ static void symbiomon_list_metrics_ult(hg_handle_t h);
 
 /* add other RPC declarations here */
 
-extern "C" int symbiomon_provider_register(
+int symbiomon_provider_register(
         margo_instance_id mid,
         uint16_t provider_id,
         const struct symbiomon_provider_args* args,
@@ -181,7 +181,7 @@ static void symbiomon_finalize_provider(void* p)
     margo_info(provider->mid, "SYMBIOMON provider successfuly finalized");
 }
 
-extern "C" int symbiomon_provider_destroy(
+int symbiomon_provider_destroy(
         symbiomon_provider_t provider)
 {
     margo_instance_id mid = provider->mid;
