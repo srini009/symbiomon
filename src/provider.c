@@ -200,10 +200,10 @@ symbiomon_return_t symbiomon_provider_metric_create_with_reduction(const char *n
     symbiomon_return_t ret = symbiomon_provider_metric_create(ns, name, t, desc, tl, m, provider);
     if(ret != SYMBIOMON_SUCCESS) return ret;
 
+#ifdef USE_AGGREGATOR
     strcat((*m)->stringify, ns);
     strcat((*m)->stringify, "_");
     strcat((*m)->stringify, name);
-#ifdef USE_AGGREGATOR
     (*m)->aggregator_id = symbiomon_hash((*m)->stringify);
     (*m)->reduction_op = op;
 
@@ -332,9 +332,15 @@ symbiomon_return_t symbiomon_provider_metric_list_all(symbiomon_provider_t provi
 
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
+#ifdef USE_AGGREGATOR
     HASH_ITER(hh, provider->metrics, r, tmp) {
         fprintf(fp, "%s %s %s\n", r->ns, r->name, r->stringify);
     }
+#else
+    HASH_ITER(hh, provider->metrics, r, tmp) {
+        fprintf(fp, "%s %s\n", r->ns, r->name);
+    }
+#endif
 
     fclose(fp);
     return SYMBIOMON_SUCCESS;
