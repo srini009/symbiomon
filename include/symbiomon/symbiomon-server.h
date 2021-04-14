@@ -10,6 +10,10 @@
 #include <margo.h>
 #include <abt-io.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define SYMBIOMON_ABT_POOL_DEFAULT ABT_POOL_NULL
 
 typedef struct symbiomon_provider* symbiomon_provider_t;
@@ -60,5 +64,9 @@ int symbiomon_provider_register(
  */
 int symbiomon_provider_destroy(
         symbiomon_provider_t provider);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
