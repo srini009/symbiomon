@@ -58,5 +58,5 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider);
 
 symbiomon_return_t symbiomon_provider_global_reduce_all_metrics(symbiomon_provider_t provider, size_t cohort_size);
-
+symbiomon_return_t symbiomon_provider_metric_list_all(symbiomon_provider_t provider, const char *filename);
 #endif

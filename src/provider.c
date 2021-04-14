@@ -200,11 +200,10 @@ symbiomon_return_t symbiomon_provider_metric_create_with_reduction(const char *n
     symbiomon_return_t ret = symbiomon_provider_metric_create(ns, name, t, desc, tl, m, provider);
     if(ret != SYMBIOMON_SUCCESS) return ret;
 
-#ifdef USE_AGGREGATOR
-
     strcat((*m)->stringify, ns);
     strcat((*m)->stringify, "_");
     strcat((*m)->stringify, name);
+#ifdef USE_AGGREGATOR
     (*m)->aggregator_id = symbiomon_hash((*m)->stringify);
     (*m)->reduction_op = op;
 
@@ -212,7 +211,6 @@ symbiomon_return_t symbiomon_provider_metric_create_with_reduction(const char *n
         strcat((*m)->stringify, "_");
         strcat((*m)->stringify, tl->taglist[i]);
     }
-
 #endif
 
     return SYMBIOMON_SUCCESS;
@@ -327,6 +325,20 @@ finish:
     margo_bulk_free(local_bulk);
 }
 static DEFINE_MARGO_RPC_HANDLER(symbiomon_metric_fetch_ult)
+
+symbiomon_return_t symbiomon_provider_metric_list_all(symbiomon_provider_t provider, const char *filename)
+{
+    FILE *fp = fopen(filename, "w");
+
+    symbiomon_metric *r, *tmp;
+    symbiomon_return_t ret;
+    HASH_ITER(hh, provider->metrics, r, tmp) {
+        fprintf(fp, "%s %s %s\n", r->ns, r->name, r->stringify);
+    }
+
+    fclose(fp);
+    return SYMBIOMON_SUCCESS;
+}
 
 symbiomon_return_t symbiomon_provider_metric_destroy(symbiomon_metric_t m, symbiomon_provider_t provider)
 {

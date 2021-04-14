@@ -97,6 +97,11 @@ symbiomon_return_t symbiomon_metric_destroy(symbiomon_metric_t m, symbiomon_prov
     return symbiomon_provider_metric_destroy(m, p);
 }
 
+symbiomon_return_t symbiomon_metric_list_all(symbiomon_provider_t p, const char *f)
+{
+    return symbiomon_provider_metric_list_all(p, f);
+}
+
 symbiomon_return_t symbiomon_metric_destroy_all(symbiomon_provider_t p)
 {
     return symbiomon_provider_destroy_all_metrics(p);
