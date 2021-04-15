@@ -244,7 +244,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     add_metric(provider, metric);
 
     *m = metric;
-    fprintf(stderr, "Created metric with id: %lu and name: %s\n", metric->id, name);
+    //fprintf(stderr, "Created metric with id: %lu and name: %s\n", metric->id, name);
 
     return SYMBIOMON_SUCCESS;
 }
@@ -259,7 +259,6 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     /* find the margo instance */
     margo_instance_id mid = margo_hg_handle_get_instance(h);
 
-    fprintf(stderr, "Do I get here?\n");
     /* find the provider */
     const struct hg_info* info = margo_get_info(h);
     symbiomon_provider_t provider = (symbiomon_provider_t)margo_registered_data(mid, info->id);
@@ -268,7 +267,6 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     hret = margo_get_input(h, &in);
     if(hret != HG_SUCCESS) {
         margo_info(provider->mid, "Could not deserialize output (mercury error %d)", hret);
-        fprintf(stderr, "COULD NOT DESERIALIZE OUTPUT\n");
         out.ret = SYMBIOMON_ERR_FROM_MERCURY;
         goto finish;
     }
@@ -280,7 +278,6 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
 
     if(hret != HG_SUCCESS) {
         margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", hret);
-        fprintf(stderr, "COULD NOT CREATE BULK HANDLE\n");
         out.ret = SYMBIOMON_ERR_FROM_MERCURY;
         goto finish;
     }
@@ -289,7 +286,6 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     symbiomon_metric* metric = find_metric(provider, &(requested_id));
     if(!metric) {
         out.ret = SYMBIOMON_ERR_INVALID_METRIC;
-        fprintf(stderr, "COULD NOT FIND METRIC at ID: %lu\n", requested_id);
 	goto finish;
     }
 
@@ -313,11 +309,9 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     if(hret != HG_SUCCESS) {
         margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", hret);
         out.ret = SYMBIOMON_ERR_FROM_MERCURY;
-        fprintf(stderr, "COULD NOT DO BULK TRANSFER\n");
         goto finish;
     }
 
-    fprintf(stderr, "Supposedly returned: %d values when %d was requested\n", out.actual_count, in.count);
     /* set the response */
     out.ret = SYMBIOMON_SUCCESS;
 
