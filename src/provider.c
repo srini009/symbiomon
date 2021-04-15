@@ -289,7 +289,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     symbiomon_metric* metric = find_metric(provider, &(requested_id));
     if(!metric) {
         out.ret = SYMBIOMON_ERR_INVALID_METRIC;
-        fprintf(stderr, "COULD NOT FIND METRIC at ID: %d\n", requested_id);
+        fprintf(stderr, "COULD NOT FIND METRIC at ID: %lu\n", requested_id);
 	goto finish;
     }
 
