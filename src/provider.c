@@ -268,6 +268,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     hret = margo_get_input(h, &in);
     if(hret != HG_SUCCESS) {
         margo_info(provider->mid, "Could not deserialize output (mercury error %d)", hret);
+        fprintf(stderr, "COULD NOT DESERIALIZE OUTPUT\n");
         out.ret = SYMBIOMON_ERR_FROM_MERCURY;
         goto finish;
     }
@@ -279,6 +280,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
 
     if(hret != HG_SUCCESS) {
         margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", hret);
+        fprintf(stderr, "COULD NOT CREATE BULK HANDLE\n");
         out.ret = SYMBIOMON_ERR_FROM_MERCURY;
         goto finish;
     }
@@ -287,6 +289,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     symbiomon_metric* metric = find_metric(provider, &(requested_id));
     if(!metric) {
         out.ret = SYMBIOMON_ERR_INVALID_METRIC;
+        fprintf(stderr, "COULD NOT FIND METRIC at ID: %d\n", requested_id);
 	goto finish;
     }
 
@@ -310,6 +313,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     if(hret != HG_SUCCESS) {
         margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", hret);
         out.ret = SYMBIOMON_ERR_FROM_MERCURY;
+        fprintf(stderr, "COULD NOT DO BULK TRANSFER\n");
         goto finish;
     }
 
