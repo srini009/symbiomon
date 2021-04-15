@@ -259,6 +259,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     /* find the margo instance */
     margo_instance_id mid = margo_hg_handle_get_instance(h);
 
+    fprintf(stderr, "Do I get here?\n");
     /* find the provider */
     const struct hg_info* info = margo_get_info(h);
     symbiomon_provider_t provider = (symbiomon_provider_t)margo_registered_data(mid, info->id);
@@ -312,6 +313,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
         goto finish;
     }
 
+    fprintf(stderr, "Supposedly returned: %d values when %d was requested\n", out.actual_count, in.count);
     /* set the response */
     out.ret = SYMBIOMON_SUCCESS;
 
