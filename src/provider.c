@@ -133,7 +133,6 @@ int symbiomon_provider_register(
         p->use_aggregator = 1;
         p->aggphs = aggphs;
         p->aggdbids = aggdbids;
-	fprintf(stderr, "Successfully setup aggregator support with num_aggregators: %d \n", p->num_aggregators);
     } else {
         fprintf(stderr, "AGGREGATOR_ADDRESS_FILE is not set. Continuing on without aggregator support");
     }
@@ -154,7 +153,6 @@ int symbiomon_provider_register(
         hret = reducer_metric_handle_create(p->redcl, svr_addr, p_id, &p->redphl);
         assert(hret == REDUCER_SUCCESS);
         p->use_reducer = 1;
-	fprintf(stderr, "Successfully setup reducer support\n");
     } else {
         fprintf(stderr, "REDUCER_ADDRESS_FILE is not set. Continuing on without reducer support");
     }
@@ -444,7 +442,6 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_MAX");
-            fprintf(stderr, "Local reduction: %s, %lf\n", key, max);
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(max));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
@@ -527,23 +524,23 @@ static symbiomon_return_t symbiomon_provider_global_metric_reduce(symbiomon_metr
             break;
         }
 	case SYMBIOMON_REDUCTION_OP_SUM: {
-            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_SUM, provider->redphl, 1, cohort_size);
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_SUM, provider->redphl, cohort_size);
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_AVG: {
-            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_AVG, provider->redphl, 1, cohort_size);
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_AVG, provider->redphl, cohort_size);
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_MIN: {
-            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_MIN, provider->redphl, 1, cohort_size);
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_MIN, provider->redphl, cohort_size);
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_MAX: {
-            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_MAX, provider->redphl, 1, cohort_size);
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_MAX, provider->redphl, cohort_size);
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_ANOMALY: {
-            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_ANOMALY, provider->redphl, m->buffer_index, cohort_size);
+            reducer_metric_reduce(m->ns, m->name, m->stringify, agg_id, REDUCER_REDUCTION_OP_ANOMALY, provider->redphl, cohort_size);
 	    break;
         }
     }
