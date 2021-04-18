@@ -480,6 +480,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_ANOMALY");
+	    fprintf(stderr, "Standard deviation is: %lf\n", sd);
 
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)outlier_list, sizeof(num_outliers*sizeof(double)));
 	    assert(ret == SDSKV_SUCCESS);
