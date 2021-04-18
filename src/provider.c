@@ -133,6 +133,7 @@ int symbiomon_provider_register(
         p->use_aggregator = 1;
         p->aggphs = aggphs;
         p->aggdbids = aggdbids;
+	fprintf(stderr, "Aggregator successfully set.\n");
     } else {
         fprintf(stderr, "AGGREGATOR_ADDRESS_FILE is not set. Continuing on without aggregator support");
     }
@@ -244,7 +245,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     add_metric(provider, metric);
 
     *m = metric;
-    //fprintf(stderr, "Created metric with id: %lu and name: %s\n", metric->id, name);
+    fprintf(stderr, "Created metric with id: %lu and name: %s\n", metric->id, name);
 
     return SYMBIOMON_SUCCESS;
 }
