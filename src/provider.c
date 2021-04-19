@@ -122,16 +122,12 @@ int symbiomon_provider_register(
         sdskv_database_id_t *aggdbids = (sdskv_database_id_t *)malloc(sizeof(sdskv_database_id_t)*p->num_aggregators);
         while(fscanf(fp_agg, "%s %u %s\n", svr_addr_str, &p_id, db_name) != EOF) {
           hg_addr_t svr_addr; 
-	  fprintf(stderr, "Trying to looking address\n");
           int hret = margo_addr_lookup(mid, svr_addr_str, &svr_addr);
           assert(hret == HG_SUCCESS);
-	  fprintf(stderr, "Do I even get here??\n");
 	  hret = sdskv_provider_handle_create(p->aggcl, svr_addr, p_id, &(aggphs[i]));
 	  assert(hret == SDSKV_SUCCESS);
-	  fprintf(stderr, "Can create handle\n");
 	  hret = sdskv_open(aggphs[i], db_name, &aggdbids[i]); 
 	  assert(hret == SDSKV_SUCCESS);
-	  fprintf(stderr, "Can open database\n");
           i++;
         }
         p->use_aggregator = 1;
@@ -249,7 +245,7 @@ symbiomon_return_t symbiomon_provider_metric_create(const char *ns, const char *
     add_metric(provider, metric);
 
     *m = metric;
-    fprintf(stderr, "Created metric with id: %lu and name: %s\n", metric->id, name);
+    //fprintf(stderr, "Created metric with id: %lu and name: %s\n", metric->id, name);
 
     return SYMBIOMON_SUCCESS;
 }
