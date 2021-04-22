@@ -443,6 +443,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_MAX");
+	    ret = sdskv_erase(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key));
+	    assert(ret == SDSKV_SUCCESS);
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &max, sizeof(max));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
