@@ -521,19 +521,19 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
 
     int i = 0;
     HASH_ITER(hh, provider->metrics, r, tmp) {
-	/*ret = symbiomon_provider_metric_reduce(r, provider);
-        if(ret != SYMBIOMON_SUCCESS) { return ret;}*/
-        thread_args[i].provider = provider;
+	ret = symbiomon_provider_metric_reduce(r, provider);
+        if(ret != SYMBIOMON_SUCCESS) { return ret;}
+        /*thread_args[i].provider = provider;
         thread_args[i].metric = r;
         ABT_thread_create(provider->pool, symbiomon_provider_reduce_metric_ult, &thread_args[i],
                           ABT_THREAD_ATTR_NULL, &threads[i]);
-        i += 1;
+        i += 1;*/
     }
 
     /* Join and free ULTs. */
-    for (i = 0; i < provider->num_metrics; i++) {
+    /*for (i = 0; i < provider->num_metrics; i++) {
         ABT_thread_free(&threads[i]);
-    }
+    }*/
     return SYMBIOMON_SUCCESS;
 }
 
