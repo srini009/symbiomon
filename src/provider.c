@@ -514,6 +514,7 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
 {
     if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
 
+    #ifdef USE_AGGREGATOR
     symbiomon_metric *m, *tmp;
 
     char **keys = (char**)malloc(sizeof(char*)*provider->num_metrics);
@@ -524,7 +525,6 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
 
     int metric_index = 0;
     HASH_ITER(hh, provider->metrics, m, tmp) {
-        #ifdef USE_AGGREGATOR
         /* find the metric */
         symbiomon_metric* metric = find_metric(provider, &m->id);
         if(!metric) {
@@ -556,13 +556,11 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
 	        break;
         }
         metric_index += 1;
-        #endif
     }
 
-    #ifdef USE_AGGREGATOR
-    ret = sdskv_erase_multi(provider->aggphs[agg_id], provider->aggdbids[agg_id], provider->num_metrics, (const void* const*)keys, (const hg_size_t *)key_sizes);
+    ret = sdskv_erase_multi(provider->aggphs[0], provider->aggdbids[0], provider->num_metrics, (const void* const*)keys, (const hg_size_t *)key_sizes);
     assert(ret == SDSKV_SUCCESS);
-    ret = sdskv_put_multi(provider->aggphs[agg_id], provider->aggdbids[agg_id], provider->num_metrics, (const void * const*)keys, (const hg_size_t *)key_sizes, (const void * const*)vals, (const hg_size_t *)val_sizes);
+    ret = sdskv_put_multi(provider->aggphs[0], provider->aggdbids[0], provider->num_metrics, (const void * const*)keys, (const hg_size_t *)key_sizes, (const void * const*)vals, (const hg_size_t *)val_sizes);
     assert(ret == SDSKV_SUCCESS);
     free(keys);
     free(vals);
