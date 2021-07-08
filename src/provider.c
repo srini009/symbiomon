@@ -496,7 +496,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_reduce_all_metrics_old(symbiomon_provider_t provider)
 {
     if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
 
@@ -507,6 +507,67 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
     }
 
+    return SYMBIOMON_SUCCESS;
+}
+
+symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider)
+{
+    if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
+
+    symbiomon_metric *m, *tmp;
+    symbiomon_return_t ret;
+
+    char **keys = (char**)malloc(sizeof(char*)*provider->num_metrics);
+    double **vals = (double**)malloc(provider->num_metrics*sizeof(double*));
+    size_t *key_sizes = (hg_size_t*)calloc(provider->num_metrics, sizeof(hg_size_t));
+    size_t *val_sizes = (hg_size_t*)calloc(provider->num_metrics, sizeof(hg_size_t));
+
+    int metric_index = 0;
+    HASH_ITER(hh, provider->metrics, m, tmp) {
+        #ifdef USE_AGGREGATOR
+        /* find the metric */
+        symbiomon_metric* metric = find_metric(provider, &m->id);
+        if(!metric) {
+            return SYMBIOMON_ERR_INVALID_METRIC;
+        }
+
+        unsigned int current_index = m->buffer_index;
+        if (current_index == 0) return SYMBIOMON_SUCCESS;
+
+        uint32_t agg_id = (uint32_t)(m->aggregator_id)%(provider->num_aggregators);
+        int ret;
+
+        switch(metric->reduction_op) {
+   	    case SYMBIOMON_REDUCTION_OP_MAX: {
+	        int i=0;
+                double max = -9999999999.0;
+    	        for(i=0; i < current_index; i++) {
+                    max = (m->buffer[i].val > max ? m->buffer[i].val:max);
+                }
+    	        keys[metric_index] = (char *)malloc(256*sizeof(char));
+    	        vals[metric_index] = (double *)calloc(1, sizeof(double));
+	        strcpy(keys[metric_index], m->stringify);
+	        strcat(keys[metric_index], "_MAX");
+                key_sizes[metric_index] = strlen(keys[metric_index]);
+                val_sizes[metric_index] = sizeof(double);
+                vals[metric_index][0] = max;
+	        break;
+            }
+            case default:
+	        break;
+        }
+        metric_index += 1;
+        #endif
+    }
+
+    #ifdef USE_AGGREGATOR
+    ret = sdskv_erase_multi(provider->aggphs[agg_id], provider->aggdbids[agg_id], provider->num_metrics, (const void* const*)keys, (const hg_size_t *)key_sizes);
+    assert(ret == SDSKV_SUCCESS);
+    ret = sdskv_put_multi(provider->aggphs[agg_id], provider->aggdbids[agg_id], provider->num_metrics, (const void * const*)keys, (const hg_size_t *)key_sizes, (const void * const*)vals, (const hg_size_t *)val_sizes);
+    assert(ret == SDSKV_SUCCESS);
+    free(keys);
+    free(vals);
+    #endif
     return SYMBIOMON_SUCCESS;
 }
 
