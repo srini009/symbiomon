@@ -521,6 +521,7 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
     double **vals = (double**)malloc(provider->num_metrics*sizeof(double*));
     size_t *key_sizes = (hg_size_t*)calloc(provider->num_metrics, sizeof(hg_size_t));
     size_t *val_sizes = (hg_size_t*)calloc(provider->num_metrics, sizeof(hg_size_t));
+    int ret;
 
     int metric_index = 0;
     HASH_ITER(hh, provider->metrics, m, tmp) {
@@ -535,7 +536,6 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
         if (current_index == 0) return SYMBIOMON_SUCCESS;
 
         uint32_t agg_id = (uint32_t)(m->aggregator_id)%(provider->num_aggregators);
-        int ret;
 
         switch(metric->reduction_op) {
    	    case SYMBIOMON_REDUCTION_OP_MAX: {
@@ -553,7 +553,7 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
                 vals[metric_index][0] = max;
 	        break;
             }
-            case default:
+            default:
 	        break;
         }
         metric_index += 1;
