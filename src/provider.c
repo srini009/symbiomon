@@ -5,6 +5,7 @@
  */
 #include <assert.h>
 #include <math.h>
+#include<time.h>
 #include "symbiomon/symbiomon-server.h"
 #include "symbiomon/symbiomon-common.h"
 #include "symbiomon/symbiomon-backend.h"
@@ -510,12 +511,14 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_reduce_all_metrics_new(symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider)
 {
     if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
 
     #ifdef USE_AGGREGATOR
     symbiomon_metric *m, *tmp;
+    srand(time(NULL));
+    uint32_t agg_id = (uint32_t)(rand())%(provider->num_aggregators+1);
 
     char **keys = (char**)malloc(sizeof(char*)*provider->num_metrics);
     double **vals = (double**)malloc(provider->num_metrics*sizeof(double*));
@@ -558,9 +561,9 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics_new(symbiomon_provider_
         metric_index += 1;
     }
 
-    ret = sdskv_erase_multi(provider->aggphs[0], provider->aggdbids[0], provider->num_metrics, (const void* const*)keys, (const hg_size_t *)key_sizes);
+    ret = sdskv_erase_multi(provider->aggphs[agg_id], provider->aggdbids[agg_id], provider->num_metrics, (const void* const*)keys, (const hg_size_t *)key_sizes);
     assert(ret == SDSKV_SUCCESS);
-    ret = sdskv_put_multi(provider->aggphs[0], provider->aggdbids[0], provider->num_metrics, (const void * const*)keys, (const hg_size_t *)key_sizes, (const void * const*)vals, (const hg_size_t *)val_sizes);
+    ret = sdskv_put_multi(provider->aggphs[agg_id], provider->aggdbids[agg_id], provider->num_metrics, (const void * const*)keys, (const hg_size_t *)key_sizes, (const void * const*)vals, (const hg_size_t *)val_sizes);
     assert(ret == SDSKV_SUCCESS);
     free(keys);
     free(vals);
