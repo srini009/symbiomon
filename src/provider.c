@@ -497,7 +497,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_reduce_all_metrics_old(symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider)
 {
     if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
 
@@ -511,7 +511,7 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics_old(symbiomon_provider_
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_reduce_all_metrics_batched(symbiomon_provider_t provider)
 {
     if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
 
@@ -561,8 +561,8 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
 
     ret = sdskv_erase_multi(provider->aggphs[agg_id], provider->aggdbids[agg_id], provider->num_metrics, (const void* const*)keys, (const hg_size_t *)key_sizes);
     assert(ret == SDSKV_SUCCESS);
-    /*ret = sdskv_put_multi(provider->aggphs[agg_id], provider->aggdbids[agg_id], provider->num_metrics, (const void * const*)keys, (const hg_size_t *)key_sizes, (const void * const*)vals, (const hg_size_t *)val_sizes);
-    assert(ret == SDSKV_SUCCESS);*/
+    ret = sdskv_put_multi(provider->aggphs[agg_id], provider->aggdbids[agg_id], provider->num_metrics, (const void * const*)keys, (const hg_size_t *)key_sizes, (const void * const*)vals, (const hg_size_t *)val_sizes);
+    assert(ret == SDSKV_SUCCESS);
     free(keys);
     free(vals);
     #endif
