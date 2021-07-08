@@ -497,17 +497,43 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
     return SYMBIOMON_SUCCESS;
 }
 
+typedef struct {
+    symbiomon_provider_t provider;
+    symbiomon_metric_t metric;
+} thread_arg_t;
+
+static void symbiomon_provider_reduce_metric_ult(void *arg) {
+   symbiomon_provider_t provider = ((thread_arg_t *)arg)->provider; 
+   symbiomon_metric *m = ((thread_arg_t *)arg)->metric;
+   symbiomon_provider_metric_reduce(m, provider);
+}
+
 symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider)
 {
     if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
 
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
+    thread_arg_t *thread_args =
+        (thread_arg_t *)malloc(sizeof(thread_arg_t) * provider->num_metrics);
+    ABT_thread *threads =
+        (ABT_thread *)malloc(sizeof(ABT_thread) * num_threads);
+
+    int i = 0;
     HASH_ITER(hh, provider->metrics, r, tmp) {
-	ret = symbiomon_provider_metric_reduce(r, provider);
-        if(ret != SYMBIOMON_SUCCESS) { return ret;}
+	/*ret = symbiomon_provider_metric_reduce(r, provider);
+        if(ret != SYMBIOMON_SUCCESS) { return ret;}*/
+        thread_args[i].provider = provider;
+        thread_args[i].metric = r;
+        ABT_thread_create(provider->pool, &thread_args[i],
+                          ABT_THREAD_ATTR_NULL, &threads[i]);
+        i += 1;
     }
 
+    /* Join and free ULTs. */
+    for (i = 0; i < provider->num_metrics; i++) {
+        ABT_thread_free(&threads[i]);
+    }
     return SYMBIOMON_SUCCESS;
 }
 
