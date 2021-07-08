@@ -515,7 +515,6 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
     if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
 
     symbiomon_metric *m, *tmp;
-    symbiomon_return_t ret;
 
     char **keys = (char**)malloc(sizeof(char*)*provider->num_metrics);
     double **vals = (double**)malloc(provider->num_metrics*sizeof(double*));
