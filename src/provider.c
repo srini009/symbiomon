@@ -517,7 +517,7 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
     thread_arg_t *thread_args =
         (thread_arg_t *)malloc(sizeof(thread_arg_t) * provider->num_metrics);
     ABT_thread *threads =
-        (ABT_thread *)malloc(sizeof(ABT_thread) * num_threads);
+        (ABT_thread *)malloc(sizeof(ABT_thread) * provider->num_metrics);
 
     int i = 0;
     HASH_ITER(hh, provider->metrics, r, tmp) {
@@ -525,7 +525,7 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
         if(ret != SYMBIOMON_SUCCESS) { return ret;}*/
         thread_args[i].provider = provider;
         thread_args[i].metric = r;
-        ABT_thread_create(provider->pool, &thread_args[i],
+        ABT_thread_create(provider->pool, symbiomon_provider_reduce_metric_ult, &thread_args[i],
                           ABT_THREAD_ATTR_NULL, &threads[i]);
         i += 1;
     }
