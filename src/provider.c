@@ -518,7 +518,7 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
     #ifdef USE_AGGREGATOR
     symbiomon_metric *m, *tmp;
     srand(time(NULL));
-    uint32_t agg_id = (uint32_t)(rand())%(provider->num_aggregators+1);
+    uint32_t agg_id = (uint32_t)(rand())%(provider->num_aggregators);
 
     char **keys = (char**)malloc(sizeof(char*)*provider->num_metrics);
     double **vals = (double**)malloc(provider->num_metrics*sizeof(double*));
@@ -536,8 +536,6 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
 
         unsigned int current_index = m->buffer_index;
         if (current_index == 0) return SYMBIOMON_SUCCESS;
-
-        uint32_t agg_id = (uint32_t)(m->aggregator_id)%(provider->num_aggregators);
 
         switch(metric->reduction_op) {
    	    case SYMBIOMON_REDUCTION_OP_MAX: {
