@@ -496,7 +496,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_reduce_all_metrics_old(symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider)
 {
     if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
 
@@ -510,7 +510,7 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics_old(symbiomon_provider_
     return SYMBIOMON_SUCCESS;
 }
 
-symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t provider)
+symbiomon_return_t symbiomon_provider_reduce_all_metrics_new(symbiomon_provider_t provider)
 {
     if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
 
