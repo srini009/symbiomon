@@ -401,6 +401,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_SUM");
+	    ret = sdskv_erase(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key));
+	    assert(ret == SDSKV_SUCCESS);
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &sum, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
@@ -416,6 +418,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_AVG");
+	    ret = sdskv_erase(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key));
+	    assert(ret == SDSKV_SUCCESS);
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &avg, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
@@ -430,6 +434,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_MIN");
+	    ret = sdskv_erase(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key));
+	    assert(ret == SDSKV_SUCCESS);
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
@@ -484,6 +490,8 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
 	    strcat(key, "_ANOMALY");
+	    ret = sdskv_erase(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key));
+	    assert(ret == SDSKV_SUCCESS);
 
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), (const void *)outlier_list, sizeof(num_outliers*sizeof(double)));
 	    assert(ret == SDSKV_SUCCESS);
@@ -497,11 +505,13 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
     return SYMBIOMON_SUCCESS;
 }
 
+/* Experimental support */
 typedef struct {
     symbiomon_provider_t provider;
     symbiomon_metric_t metric;
 } thread_arg_t;
 
+/* Experimental support */
 static void symbiomon_provider_reduce_metric_ult(void *arg) {
    symbiomon_provider_t provider = ((thread_arg_t *)arg)->provider; 
    symbiomon_metric *m = ((thread_arg_t *)arg)->metric;
@@ -523,20 +533,12 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
     HASH_ITER(hh, provider->metrics, r, tmp) {
 	ret = symbiomon_provider_metric_reduce(r, provider);
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
-        /*thread_args[i].provider = provider;
-        thread_args[i].metric = r;
-        ABT_thread_create(provider->pool, symbiomon_provider_reduce_metric_ult, &thread_args[i],
-                          ABT_THREAD_ATTR_NULL, &threads[i]);
-        i += 1;*/
     }
 
-    /* Join and free ULTs. */
-    /*for (i = 0; i < provider->num_metrics; i++) {
-        ABT_thread_free(&threads[i]);
-    }*/
     return SYMBIOMON_SUCCESS;
 }
 
+/* Purely experimental support! Not very performant at the moment */
 symbiomon_return_t symbiomon_provider_reduce_all_metrics_batched(symbiomon_provider_t provider)
 {
     if(provider->use_aggregator == 0) return SYMBIOMON_SUCCESS;
