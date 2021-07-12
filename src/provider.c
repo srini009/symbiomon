@@ -439,6 +439,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
+            fprintf(stderr, "BRO, Do I get here?\n");
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_MAX: {
