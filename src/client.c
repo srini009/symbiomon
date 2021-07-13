@@ -4,6 +4,7 @@
  * See COPYRIGHT in top-level directory.
  */
 #include <stdarg.h>
+#include <assert.h>
 #include "types.h"
 #include "client.h"
 #include "provider.h"
