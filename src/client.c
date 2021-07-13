@@ -259,24 +259,29 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     hg_size_t segment_sizes[1] = {*num_samples_requested*sizeof(symbiomon_metric_sample)};
     void *segment_ptrs[1] = {(void*)b};
 
-    margo_bulk_create(handle->client->mid, 1,  segment_ptrs, segment_sizes, HG_BULK_WRITE_ONLY, &local_bulk);
+    ret = margo_bulk_create(handle->client->mid, 1,  segment_ptrs, segment_sizes, HG_BULK_WRITE_ONLY, &local_bulk);
     in.bulk = local_bulk;
+    assert(ret == HG_SUCCESS);
 
     if(!in.bulk) fprintf(stderr, "WTFFFF bulk is null!\n");
-    fprintf(stderr, "Received a request for %d samples and allocated segment size: %lu\n", *num_samples_requested, segment_sizes[1]);
+    fprintf(stderr, "Received a request for %d samples and allocated segment size: %lu\n", *num_samples_requested, segment_sizes[0]);
 
     ret = margo_create(handle->client->mid, handle->addr, handle->client->metric_fetch_id, &h);
+    
+    assert(ret == HG_SUCCESS);
     if(ret != HG_SUCCESS)         
         return SYMBIOMON_ERR_FROM_MERCURY; 
 
     ret = margo_provider_forward(handle->provider_id, h, &in);
     if(ret != HG_SUCCESS) {
         margo_destroy(h);
+        fprintf(stderr, "Damn I got an error!\n");
 	return SYMBIOMON_ERR_FROM_MERCURY;
     }
 
     ret = margo_get_output(h, &out);
     if(ret != HG_SUCCESS) {
+        fprintf(stderr, "Damn there is an issue here!\n");
 	margo_free_output(h, &out);
         margo_destroy(h);
 	return SYMBIOMON_ERR_FROM_MERCURY;
@@ -291,7 +296,7 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
 
     margo_free_output(h, &out);
     margo_destroy(h);
-    margo_bulk_free(local_bulk);
+    //margo_bulk_free(local_bulk);
 
     return out.ret;
 }
