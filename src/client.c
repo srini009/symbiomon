@@ -262,6 +262,9 @@ symbiomon_return_t symbiomon_remote_metric_fetch(symbiomon_metric_handle_t handl
     margo_bulk_create(handle->client->mid, 1,  segment_ptrs, segment_sizes, HG_BULK_WRITE_ONLY, &local_bulk);
     in.bulk = local_bulk;
 
+    if(!in.bulk) fprintf(stderr, "WTFFFF bulk is null!\n");
+    fprintf(stderr, "Received a request for %d samples and allocated segment size: %lu\n", *num_samples_requested, segment_sizes[1]);
+
     ret = margo_create(handle->client->mid, handle->addr, handle->client->metric_fetch_id, &h);
     if(ret != HG_SUCCESS)         
         return SYMBIOMON_ERR_FROM_MERCURY; 
