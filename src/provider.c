@@ -427,10 +427,14 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_MIN: {
-	    int i=0;
-            double min = 9999999999.0;
-	    for(i=0; i < current_index; i++) {
-                min = (m->buffer[i].val < min ? m->buffer[i].val:min);
+	    int i=0; double min;
+            if(m->type == SYMBIOMON_TYPE_GAUGE) {
+              min = 9999999999.0;
+  	      for(i=0; i < current_index; i++) {
+                  min = (m->buffer[i].val < min ? m->buffer[i].val:min);
+              }
+            } else {
+              min = m->buffer[current_index].val;
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
@@ -439,15 +443,19 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    assert(ret == SDSKV_SUCCESS);
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(min));
 	    assert(ret == SDSKV_SUCCESS);
-            fprintf(stderr, "Minimum for %s is %lf\n", key, min);
             free(key);
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_MAX: {
 	    int i=0;
-            double max = -9999999999.0;
-	    for(i=0; i < current_index; i++) {
-                max = (m->buffer[i].val > max ? m->buffer[i].val:max);
+            double max;
+            if(m->type == SYMBIOMON_TYPE_GAUGE) {
+              max = -9999999999.0;
+	      for(i=0; i < current_index; i++) {
+                  max = (m->buffer[i].val > max ? m->buffer[i].val:max);
+              }
+            } else {
+              max = m->buffer[current_index].val;
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
