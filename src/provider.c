@@ -309,6 +309,7 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     /* do the bulk transfer */
     hret = margo_bulk_transfer(mid, HG_BULK_PUSH, info->addr, in.bulk, 0, local_bulk, 0, buf_size);
     if(hret != HG_SUCCESS) {
+        fprintf(stderr, "FAAAAILLLED!\n");
         margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", hret);
         out.ret = SYMBIOMON_ERR_FROM_MERCURY;
         goto finish;
@@ -322,7 +323,7 @@ finish:
     hret = margo_respond(h, &out);
     hret = margo_free_input(h, &in);
     margo_destroy(h);
-    margo_bulk_free(local_bulk);
+    //margo_bulk_free(local_bulk);
 }
 static DEFINE_MARGO_RPC_HANDLER(symbiomon_metric_fetch_ult)
 
@@ -427,7 +428,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
         }
 	case SYMBIOMON_REDUCTION_OP_MIN: {
 	    int i=0;
-            double min = 99999999999.0;
+            double min = 9999999999.0;
 	    for(i=0; i < current_index; i++) {
                 min = (m->buffer[i].val < min ? m->buffer[i].val:min);
             }
@@ -436,8 +437,9 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    strcat(key, "_MIN");
 	    ret = sdskv_erase(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key));
 	    assert(ret == SDSKV_SUCCESS);
-	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(double));
+	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &min, sizeof(min));
 	    assert(ret == SDSKV_SUCCESS);
+            fprintf(stderr, "Minimum for %s is %lf\n", key, min);
             free(key);
 	    break;
         }
