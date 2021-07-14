@@ -309,7 +309,6 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
     /* do the bulk transfer */
     hret = margo_bulk_transfer(mid, HG_BULK_PUSH, info->addr, in.bulk, 0, local_bulk, 0, buf_size);
     if(hret != HG_SUCCESS) {
-        fprintf(stderr, "FAAAAILLLED!\n");
         margo_info(provider->mid, "Could not create bulk_handle (mercury error %d)", hret);
         out.ret = SYMBIOMON_ERR_FROM_MERCURY;
         goto finish;
@@ -439,7 +438,6 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
               } else {
                 min = 0.0;
               }
-              fprintf(stderr, "Min is: %lf\n", min);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
@@ -465,7 +463,6 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
               } else {
                 max = 0.0;
               }
-              fprintf(stderr, "Max is: %lf\n", max);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
