@@ -434,8 +434,12 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
                   min = (m->buffer[i].val < min ? m->buffer[i].val:min);
               }
             } else {
-              fprintf(stderr, "Min is: %lf\n", m->buffer[current_index].val);
-              min = m->buffer[current_index].val;
+              if(current_index) {
+                min = m->buffer[current_index-1].val;
+              } else {
+                min = 0.0;
+              }
+              fprintf(stderr, "Min is: %lf\n", min);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
@@ -456,7 +460,12 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
                   max = (m->buffer[i].val > max ? m->buffer[i].val:max);
               }
             } else {
-              max = m->buffer[current_index].val;
+              if(current_index) {
+                max = m->buffer[current_index-1].val;
+              } else {
+                max = 0.0;
+              }
+              fprintf(stderr, "Max is: %lf\n", max);
             }
 	    char *key = (char *)malloc(256*sizeof(char));
 	    strcpy(key, m->stringify);
