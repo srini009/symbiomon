@@ -434,6 +434,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
                   min = (m->buffer[i].val < min ? m->buffer[i].val:min);
               }
             } else {
+              fprintf(stderr, "Min is: %lf\n", m->buffer[current_index].val);
               min = m->buffer[current_index].val;
             }
 	    char *key = (char *)malloc(256*sizeof(char));
