@@ -291,12 +291,6 @@ static void symbiomon_metric_fetch_ult(hg_handle_t h)
 	goto finish;
     }
 
-
-    out.name = (char*)malloc(36*sizeof(char));
-    out.ns = (char*)malloc(36*sizeof(char));
-    strcpy(out.name, metric->name);
-    strcpy(out.ns, metric->ns);
-
     /* copyout metric buffer of requested size */
     if(metric->buffer_index < in.count) {
         out.actual_count = metric->buffer_index;
@@ -322,7 +316,7 @@ finish:
     hret = margo_respond(h, &out);
     hret = margo_free_input(h, &in);
     margo_destroy(h);
-    //margo_bulk_free(local_bulk);
+    margo_bulk_free(local_bulk);
 }
 static DEFINE_MARGO_RPC_HANDLER(symbiomon_metric_fetch_ult)
 

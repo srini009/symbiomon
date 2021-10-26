@@ -62,8 +62,6 @@ MERCURY_GEN_PROC(metric_fetch_in_t,
 
 MERCURY_GEN_PROC(metric_fetch_out_t,
 	((int64_t)(actual_count))\
-	((hg_string_t)(name))\
-	((hg_string_t)(ns))\
         ((int32_t)(ret)))
 
 /* Extra hand-coded serialization functions */
