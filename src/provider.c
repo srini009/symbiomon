@@ -541,7 +541,6 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
 	ret = symbiomon_provider_metric_reduce(r, provider);
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
     }
-    fprintf(stderr, "Reducing: %d metrics\n", provider->num_metrics);
 
     return SYMBIOMON_SUCCESS;
 }
