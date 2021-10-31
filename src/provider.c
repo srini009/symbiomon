@@ -535,16 +535,13 @@ symbiomon_return_t symbiomon_provider_reduce_all_metrics(symbiomon_provider_t pr
 
     symbiomon_metric *r, *tmp;
     symbiomon_return_t ret;
-    thread_arg_t *thread_args =
-        (thread_arg_t *)malloc(sizeof(thread_arg_t) * provider->num_metrics);
-    ABT_thread *threads =
-        (ABT_thread *)malloc(sizeof(ABT_thread) * provider->num_metrics);
 
     int i = 0;
     HASH_ITER(hh, provider->metrics, r, tmp) {
 	ret = symbiomon_provider_metric_reduce(r, provider);
         if(ret != SYMBIOMON_SUCCESS) { return ret;}
     }
+    fprintf(stderr, "Reducing: %d metrics\n", provider->num_metrics);
 
     return SYMBIOMON_SUCCESS;
 }
