@@ -400,6 +400,7 @@ symbiomon_return_t symbiomon_provider_metric_reduce(symbiomon_metric_t m, symbio
 	    ret = sdskv_put(provider->aggphs[agg_id], provider->aggdbids[agg_id], (const void *)key, strlen(key), &sum, sizeof(double));
 	    assert(ret == SDSKV_SUCCESS);
             free(key);
+	    fprintf(stderr, "SYMBIOMON: Writing reduced SUM value: %lf with key: %s\n", sum, key);
 	    break;
         }
 	case SYMBIOMON_REDUCTION_OP_AVG: {
