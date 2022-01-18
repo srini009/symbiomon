@@ -1,4 +1,4 @@
-SYMBIMON is a prototype distributed, metric monitoring service designed
+SYMBIOMON is a prototype distributed, metric monitoring service designed
 for use on HPC systems. Internally, SYMBIOMON employs a time-series
 data model and is composed of three microservice components:
 1. COLLECTOR: Exposes the main metric API.
