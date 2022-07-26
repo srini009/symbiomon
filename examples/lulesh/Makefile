@@ -5,11 +5,11 @@ SHELL = /bin/sh
 
 LULESH_EXEC = lulesh2.0
 
-MPI_INC = /opt/local/include/openmpi
-MPI_LIB = /opt/local/lib
+MPI_INC = /opt/local/include/openmpi #Change this
+MPI_LIB = /opt/local/lib #Change this
 
-SERCXX = CC -DUSE_MPI=0
-MPICXX = CC -DUSE_MPI=1
+SERCXX = CC -DUSE_MPI=0 #Change this
+MPICXX = CC -DUSE_MPI=1 #Change this
 CXX = $(MPICXX)
 
 SOURCES2.0 = \
