@@ -7,8 +7,7 @@ export MPICH_GNI_NDREG_ENTRIES=1024
 
 echo "Setting up spack and modules"
 source ./sourceme.sh
-spack load mochi-sdskv@develop-test+aggrservice+symbiomon
-spack unload pkgconf
+spack load mochi-symbiomon
 export LD_LIBRARY_PATH=$LIBRARY_PATH
 
 apstat -P | grep ${PDOMAIN} || apmgr pdomain -c -u ${PDOMAIN}
@@ -17,8 +16,7 @@ echo "Starting Aggregator.."
 aprun -n 2 -N 2 -cc none -d 32 -p ${PDOMAIN} sdskv-aggr-service ofi+gni:// foo:map -f sdskv.add &
 
 spack unload --all
-spack load mochi-reducer@develop+aggregator+symbiomon 
-spack unload pkgconf
+spack load mochi-symbiomon
 export LD_LIBRARY_PATH=$LIBRARY_PATH
 export AGGREGATOR_ADDRESS_FILE=`pwd`/sdskv.add
 sleep 5
@@ -28,8 +26,7 @@ aprun -n 1 -N 1 -cc none -d 64 -p ${PDOMAIN} server ofi+gni:// &
 sleep 5
 
 spack unload --all
-spack load mochi-symbiomon@develop+aggregator+bedrock+reducer
-spack unload pkgconf
+spack load mochi-symbiomon
 echo "Starting LULESH"
 export TAU_PLUGINS=libTAU-mochi-symbiomon-plugin.so
 export PATH=/home/sramesh/MOCHI/TAU_INSTALL/craycnl/bin:$PATH #Change this line
