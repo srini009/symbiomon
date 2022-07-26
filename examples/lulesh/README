@@ -1,18 +1,15 @@
 Build and run instructions:
 --------------------------
-Follow this sequence of steps to build and run LULESH with SYMBIOMON (this example assumed Theta as the platform of choice):
+Follow this sequence of steps to build and run LULESH with SYMBIOMON:
 1. Install spack
-2. Download the mochi repo from here: https://github.com/srini009/mochi-spack-packages. Change to the "experimental" branch. Add this repo to spack.
-3. In this directory, make the LULESH program (make)
-4. cd symbiomon/theta_run_scripts && source .sourceme.sh
-5. Install SYMBIOMON using: . spack_symbiomon_recipe.sh (may take some time to build the entire stack)
-6. Download this special flavor of TAU: https://github.com/srini009/tau2. Checkout the "symbiomon" branch.
-7. Load the necessary symbiomon components: spack load mochi-symbiomon@develop+aggregator+bedrock+reducer
-8. Unload the "pkgconf" package. It causes some annoying build failures: spack unload pkgconf 
-9. Configure TAU with these flags:  ./configure -mpi -bfd=download -mochi -prefix=/path/to/TAU_INSTALL
-10. The "small-run.qsub" file is a sample job submission script on Theta. Open the file and change the
-lines that say "Change this line".
-11. Run the script using: qsub -A radix-io -t 30 -n 4 -q debug-flat-quad --mode script small-run.qsub
+2. Download the mochi repo from here: https://github.com/srini009/mochi-spack-packages. Change to the "experimental-dewi" branch. Add this repo to spack.
+3. In this directory, modify the Makefile appropriately and make the LULESH program
+4. Install SYMBIOMON: spack install mochi-symbiomon@develop+aggregator+reducer (Note: You have need to install the appropriate libfabric variant
+   depending on the kind of machine you are running on. This example assumes that you are running on a single node (or laptop).
+5. Download this special flavor of TAU: https://github.com/srini009/tau2. Checkout the "symbiomon" branch.
+6. Load the necessary symbiomon components: spack load mochi-symbiomon
+7. Configure TAU with these flags:  ./configure -mpi -bfd=download -mochi -prefix=/path/to/TAU_INSTALL
+8. The "small-run.qsub" file is a sample job submission script on Theta@ALCF. Use this file as the basis to create your own job script.
 
 Explanation of the setup:
 ------------------------
