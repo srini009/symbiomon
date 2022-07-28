@@ -5,7 +5,7 @@ Follow this sequence of steps to build and run LULESH with SYMBIOMON:
 2. Download the mochi repo from here: https://github.com/srini009/mochi-spack-packages. Change to the "experimental-dewi" branch. Add this repo to spack.
 3. In this directory, modify the Makefile appropriately and make the LULESH program
 4. Install SYMBIOMON: 
-   a. If using the REDUCER: spack install mochi-symbiomon@develop+aggregator+reducer && spack install mochi-reducer@develop+symbiomon+aggrservice
+   a. If using the REDUCER: spack install mochi-symbiomon@develop+aggregator+reducer && spack install mochi-reducer@develop+symbiomon+aggregator
    b. If not using the REDUCER: spack install mochi-symbiomon@develop+aggregator
    Note: You have need to install the appropriate libfabric variant depending on the kind of machine you are running on. 
    This example assumes that you are running on a single node (or laptop). 
