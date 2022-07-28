@@ -9,7 +9,7 @@ Follow this sequence of steps to build and run LULESH with SYMBIOMON:
    b. If not using the REDUCER: spack install mochi-symbiomon@develop+aggregator
    Note: You have need to install the appropriate libfabric variant depending on the kind of machine you are running on. 
    This example assumes that you are running on a single node (or laptop). 
-5. Download this special flavor of TAU: https://github.com/srini009/tau2. Checkout the "symbiomon" branch.
+5. Download this special flavor of TAU: https://github.com/srini009/tau2. Checkout the "symbiomon" branch. Note: Building TAU would require REDUCER support (use step 4.a)
 6. Load the necessary symbiomon components: spack load mochi-symbiomon
 7. Configure TAU with these flags:  ./configure -mpi -bfd=download -mochi -prefix=/path/to/TAU_INSTALL
 8. The "small-run.qsub" file is a sample job submission script on Theta@ALCF. Use this file as the basis to create your own job script.
