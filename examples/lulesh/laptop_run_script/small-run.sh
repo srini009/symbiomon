@@ -2,13 +2,13 @@
 set -eu
 
 echo "Setting up spack and modules"
-spack install mochi-symbiomon@develop+aggregator+reducer
+spack load mochi-symbiomon@develop+aggregator+reducer
 
 echo "Starting Aggregator.."
 mpirun -np 2 sdskv-aggr-service na+sm:// foo:map -f sdskv.add &
 
 spack unload --all
-spack install mochi-reducer@develop+symbiomon+aggregator
+spack load mochi-reducer@develop+symbiomon+aggregator
 export AGGREGATOR_ADDRESS_FILE=`pwd`/sdskv.add
 sleep 5
 
@@ -17,7 +17,7 @@ mpirun -np 1 server na+sm:// &
 sleep 5
 
 spack unload --all
-spack install mochi-symbiomon@develop+aggregator+reducer
+spack load mochi-symbiomon@develop+aggregator+reducer
 echo "Starting LULESH"
 export TAU_PLUGINS=libTAU-mochi-symbiomon-plugin.so
 export PATH=/home/sramesh/MOCHI/TAU_INSTALL/craycnl/bin:$PATH #Change this line
