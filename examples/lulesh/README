@@ -10,10 +10,20 @@ Follow this sequence of steps to build and run LULESH with SYMBIOMON:
 5. Download this special flavor of TAU: https://github.com/srini009/tau2. Checkout the "symbiomon" branch. 
 6. Load the necessary symbiomon components using spack
 7. Configure TAU with these flags:  ./configure -mpi -bfd=download -mochi -prefix=/path/to/TAU_INSTALL
-8. The laptop_run_script/small-run.sh" file is a sample job submission script for a single node installation (or a laptop). Use this script
+8. The laptop_run_script/small-run.sh file is a sample job submission script for a single node installation (or a laptop). Use this script
    to create your own job submission script on your cluster.
 
-Using the 
+Jupyter-based Remote Monitoring:
+-------------------------------------
+1. Install py-symbiomon: spack install py-mochi-symbiomon ^mochi-symbiomon@develop+aggregator+reducer
+2. Install Jupyter notebook and dependencies: spack install py-jupyter && spack install py-cycler && spack install py-matplotlib
+3. Load the spack modules: spack load py-mochi-symbiomon && spack load py-cycler && spack load py-matplotlib && spack load py-jupyter
+4. Run:
+   a. jupyter-notebook password (only needed for the first time)
+   b. jupyter-notebook --no-browser --port=8897 --ip=0.0.0.0
+5. In a separate terminal, run the LULESH program with SYMBIOMON monitoring support (COLLECTOR, AGGREGATOR, AND REDUCER)
+6. Open your local browser and connect to the Jupyter server and run the notebook in this directory (test_symbiomon.ipynb)
+   Note: You would have to make appropriate modifications to the Jupyter notebook, depending on the protocol used, etc.
 
 Explanation of the setup:
 ------------------------
@@ -43,5 +53,4 @@ service.
 
 The globally reduced metric data is written to STDERR ($JOB_ID.err). Metric reduction frequency
 is controlled using the environment variable TAU_SYMBIOMON_REDUCTION_FREQUENCY.
-
 
