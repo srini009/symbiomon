@@ -8,7 +8,7 @@ Follow this sequence of steps to build and run LULESH with SYMBIOMON:
    Note: You have need to install the appropriate libfabric variant depending on the kind of machine you are running on. 
    This example assumes that you are running on a single node (or laptop). 
 5. Download this special flavor of TAU: https://github.com/srini009/tau2. Checkout the "symbiomon" branch. 
-6. Load the necessary symbiomon components using spack
+6. Load the necessary symbiomon components: spack load mochi-symbiomon@develop+aggregator+reducer
 7. Configure TAU with these flags:  ./configure -mpi -bfd=download -mochi -prefix=/path/to/TAU_INSTALL
 8. The laptop_run_script/small-run.sh file is a sample job submission script for a single node installation (or a laptop). Use this script
    to create your own job submission script on your cluster.
@@ -22,7 +22,9 @@ Jupyter-based Remote Monitoring:
    a. jupyter-notebook password (only needed for the first time)
    b. jupyter-notebook --no-browser --port=8897 --ip=0.0.0.0
 5. In a separate terminal, run the LULESH program with SYMBIOMON monitoring support (COLLECTOR, AGGREGATOR, AND REDUCER)
-6. Open your local browser and connect to the Jupyter server and run the notebook in this directory (test_symbiomon.ipynb)
+6. Tunnel to the server: ssh -N -f -L 8897:cn37:8897 username@cluster
+7. In your browser, run: http://localhost:8897
+8. Once you are connected to the Jupyter instance, run the notebook in this directory (test_symbiomon.ipynb)
    Note: You would have to make appropriate modifications to the Jupyter notebook, depending on the protocol used, etc.
 
 Explanation of the setup:
