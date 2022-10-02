@@ -7,7 +7,7 @@
 #define __PROVIDER_H
 
 #include <margo.h>
-#include <abt-io.h>
+//#include <abt-io.h>
 #include "uthash.h"
 #include "types.h"
 #ifdef USE_AGGREGATOR
@@ -23,7 +23,7 @@ typedef struct symbiomon_provider {
     margo_instance_id  mid;                 // Margo instance
     uint16_t           provider_id;         // Provider id
     ABT_pool           pool;                // Pool on which to post RPC requests
-    abt_io_instance_id abtio;               // ABT-IO instance
+    //abt_io_instance_id abtio;               // ABT-IO instance
     /* Resources and backend types */
     size_t               num_metrics;     // number of metrics
     symbiomon_metric*      metrics;         // hash of metrics by id

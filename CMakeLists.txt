@@ -50,7 +50,7 @@ pkg_check_modules (MARGO REQUIRED IMPORTED_TARGET margo)
 # search for uuid
 pkg_check_modules (UUID REQUIRED IMPORTED_TARGET uuid)
 # comment if you don't need abt-io
-pkg_check_modules (ABTIO REQUIRED IMPORTED_TARGET abt-io)
+#pkg_check_modules (ABTIO REQUIRED IMPORTED_TARGET abt-io)
 # search for json-c
 #pkg_check_modules (JSONC REQUIRED IMPORTED_TARGET json-c)
 

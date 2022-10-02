@@ -83,7 +83,7 @@ int symbiomon_provider_register(
     p->mid = mid;
     p->provider_id = provider_id;
     p->pool = a.pool;
-    p->abtio = a.abtio;
+    //p->abtio = a.abtio;
 
     /* Admin RPCs */
 

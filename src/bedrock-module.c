@@ -22,8 +22,8 @@ static int symbiomon_register_provider(
     symbiomon_args.config = bedrock_args_get_config(args);
     symbiomon_args.pool   = bedrock_args_get_pool(args);
 
-    symbiomon_args.abtio = (abt_io_instance_id)
-        bedrock_args_get_dependency(args, "abt_io", 0);
+    //symbiomon_args.abtio = (abt_io_instance_id)
+     //   bedrock_args_get_dependency(args, "abt_io", 0);
 
     return symbiomon_provider_register(mid, provider_id, &symbiomon_args,
                                    (symbiomon_provider_t*)provider);

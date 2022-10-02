@@ -8,7 +8,7 @@
 
 #include <symbiomon/symbiomon-common.h>
 #include <margo.h>
-#include <abt-io.h>
+//#include <abt-io.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +25,7 @@ struct symbiomon_provider_args {
     const char*        token;  // Security token
     const char*        config; // JSON configuration
     ABT_pool           pool;   // Pool used to run RPCs
-    abt_io_instance_id abtio;  // ABT-IO instance
+  //  abt_io_instance_id abtio;  // ABT-IO instance
     // ...
 };
 
@@ -33,8 +33,8 @@ struct symbiomon_provider_args {
     .push_finalize_callback = 1,\
     .token = NULL, \
     .config = NULL, \
-    .pool = ABT_POOL_NULL, \
-    .abtio = ABT_IO_INSTANCE_NULL \
+    .pool = ABT_POOL_NULL \
+    //.abtio = ABT_IO_INSTANCE_NULL \
 }
 
 /**
