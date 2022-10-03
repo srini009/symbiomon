@@ -34,7 +34,6 @@ struct symbiomon_provider_args {
     .token = NULL, \
     .config = NULL, \
     .pool = ABT_POOL_NULL \
-    //.abtio = ABT_IO_INSTANCE_NULL \
 }
 
 /**
