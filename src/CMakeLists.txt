@@ -35,7 +35,6 @@ endif(${ENABLE_REDUCER})
 add_library (symbiomon-server ${server-src-files} ${dummy-src-files})
 target_link_libraries (symbiomon-server
     PkgConfig::MARGO
-    PkgConfig::ABTIO
     PkgConfig::UUID)
 #    PkgConfig::JSONC)
 target_include_directories (symbiomon-server PUBLIC $<INSTALL_INTERFACE:include>)
